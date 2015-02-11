@@ -1,56 +1,71 @@
 <?php
-
+/**
+ * @var $lng_dl
+ */
 /*
-////////////////////////////////////////////////////////////////////////////////
-// JohnCMS                             Content Management System              //
-// Официальный сайт сайт проекта:      http://johncms.com                     //
-// Дополнительный сайт поддержки:      http://gazenwagen.com                  //
-////////////////////////////////////////////////////////////////////////////////
-// JohnCMS core team:                                                         //
-// Евгений Рябинин aka john77          john77@gazenwagen.com                  //
-// Олег Касьянов aka AlkatraZ          alkatraz@gazenwagen.com                //
-//                                                                            //
-// Информацию о версиях смотрите в прилагаемом файле version.txt              //
-////////////////////////////////////////////////////////////////////////////////
+Скрипт загруз центра для JohnCMS
+Автор: Максим (simba)
+ICQ: 61590077
+Сайт: http://symbos.su
+R866920725287
+Z117468354234
 */
 
-defined('_IN_JOHNCMS') or die('Error: restricted access');
-require_once("../incfiles/head.php");
-if ($_GET['id'] == "") {
-    echo "ERROR<br/><a href='index.php?'>Back</a><br/>";
-    require_once('../incfiles/end.php');
-    exit;
-}
-$typ = mysql_query("SELECT * FROM `download` WHERE `id` = '" . $id . "'");
-$ms = mysql_fetch_assoc($typ);
-if ($ms['type'] != "file") {
-    echo "ERROR<br/><a href='index.php?'>Back</a><br/>";
-    require_once('../incfiles/end.php');
-    exit;
-}
-if ($_SESSION['rat'] == $id) {
-    echo $lng_dl['already_rated'] . "<br/><a href='index.php?act=view&amp;file=" . $id . "'>" . $lng['back'] . "</a><br/>";
-    require_once('../incfiles/end.php');
+defined('_IN_JOHNCMS') or die('Error:restricted access');
+require_once '../incfiles/head.php';
+if (!$_GET['id'])
+{
+    echo $lng_dl['file_not_found'].'<br/><a href="index.php?">'.$lng['back'].'</a><br/>';
+    include_once '../incfiles/end.php';
     exit;
 }
 
-if (isset($_POST['rat'])
-    && ctype_digit($_POST['rat'])
-    && $_POST['rat'] > 0
-    && $_POST['rat'] < 11
-) {
-    $rat = intval($_POST['rat']);
-    if (!empty($ms['soft'])) {
-        $tmp = unserialize($ms['soft']);
-        $rating['vote'] = $tmp['vote'] + $rat;
-        $rating['count'] = $tmp['count'] + 1;
-    } else {
-        $rating['vote'] = $rat;
-        $rating['count'] = 1;
+$id = intval(trim($_GET['id']));
+$typ = mysql_query("select * from `downfiles` where id='" . $id . "';");
+$ms = mysql_fetch_array($typ);
+
+if ($ms[type]){
+    echo 'Ошибка<br/><a href="index.php?">'.$lng['back'].'</a><br/>';
+    include_once ('../incfiles/end.php');
+    exit; }
+    
+if(!$user_id){
+    echo $lng_dl['register_only']."<br/><a href='index.php?'>".$lng['back']."</a><br/>";
+    include_once ('../incfiles/end.php');
+    exit;
     }
 
-    $_SESSION['rat'] = $id;
-    mysql_query("UPDATE `download` SET `soft` = '" . mysql_real_escape_string(serialize($rating)) . "' WHERE `id` = '" . $id . "'");
-}
+if (intval($_GET['rat']) > 5 || intval($_GET['rat']) <= 0){ 
+    echo $lng_dl['error_rating_point'];
+include_once ('../incfiles/end.php');
+    exit;
+    }
+$idd = explode('|',$ms['gol']);
 
-echo $lng_dl['vote_adopted'] . "<br/><a href='index.php?act=view&amp;file=" . $id . "'>" . $lng['back'] . "</a><br/>";
+if(in_array($user_id, $idd)){
+    echo $lng_dl['you_have_already_rated'].'<br/>';
+    echo'<a href="file_'.$id.'.html">'.$lng['back'].'</a><br/>';
+    include_once '../incfiles/end.php';
+    exit;
+        }
+
+
+$rat = intval($_GET['rat']);
+$gol = $ms['gol'] ? count($idd) : 0;
+$gol++;
+
+if ($ms[rating]){
+    
+    $rt1 = $ms['rating'];
+    $rt2 = $rt1-$rat;
+    $rt2 = $rt2/$gol;
+    $rat1 = $rt1-$rt2;
+
+}else{ $rat1 = $rat; }
+
+$goll = !$ms['gol'] ? $user_id : $ms['gol'].'|'.$user_id;
+
+mysql_query("update `downfiles` set `rating` = '" . $rat1 . "', `gol` = '".$goll."' where id = '" . $id . "';");
+echo $lng_dl['rating_set']."<br/><a href='file_" . $id . ".html'>".$lng['back']."</a><br/>";
+
+?>

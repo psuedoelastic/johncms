@@ -1,90 +1,53 @@
 <?php
+/*
+Скрипт загруз центра для JohnCMS
+Автор: Максим (simba)
+ICQ: 61590077
+Сайт: http://symbos.su
+R866920725287
+Z117468354234
+*/
 
-/**
- * @package     JohnCMS
- * @link        http://johncms.com
- * @copyright   Copyright (C) 2008-2011 JohnCMS Community
- * @license     LICENSE.txt (see attached file)
- * @version     VERSION.txt (see attached file)
- * @author      http://johncms.com/about
- */
+$lng_dl = core::load_lng('downloads');
 
-defined('_IN_JOHNCMS') or die('Error: restricted access');
+defined('_IN_JOHNCMS') or die('Error:restricted access');
+$textl = $lng_dl['downloads'].' / '.$lng_dl['last_100_files'];
+require_once '../incfiles/head.php';
+echo '<div class="phdr"><img src="img/new.png" alt="."/> '.$lng_dl['last_100_files'].'</div>';
+$cat = intval($_GET['cat']);
 
-require_once ("../incfiles/head.php");
-echo '<div class="phdr">' . $lng['new_files'] . '</div>';
+$cat_inf = mysql_query("SELECT * FROM `downpath` WHERE `id` = '" . $cat . "' LIMIT 1");
 
-$req = mysql_query("SELECT COUNT(*) FROM `download` WHERE `time` > '" . (time() - 259200) . "' AND `type` = 'file'");
-$total = mysql_result($req, 0);
-
-if ($total) {
-    ////////////////////////////////////////////////////////////
-    // Выводим список новых файлов                            //
-    ////////////////////////////////////////////////////////////
-    $req = mysql_query("SELECT * FROM `download` WHERE `time` > '" . (time() - 259200) . "' AND `type` = 'file' ORDER BY `time` DESC LIMIT $start, $kmess");
-    while ($newf = mysql_fetch_array($req)) {
-        echo $i % 2 ? '<div class="list2">' : '<div class="list1">';
-        $fsz = filesize("$newf[adres]/$newf[name]");
-        $fsz = round($fsz / 1024, 2);
-        $ft = functions::format("$newf[adres]/$newf[name]");
-        switch ($ft) {
-            case "mp3" :
-                $imt = "mp3.png";
-                break;
-            case "zip" :
-                $imt = "rar.png";
-                break;
-            case "jar" :
-                $imt = "jar.png";
-                break;
-            case "gif" :
-                $imt = "gif.png";
-                break;
-            case "jpg" :
-                $imt = "jpg.png";
-                break;
-            case "png" :
-                $imt = "png.png";
-                break;
-            default :
-                $imt = "file.gif";
-                break;
-        }
-        if ($newf['text'] != "") {
-            $tx = $newf['text'];
-            if (mb_strlen($tx) > 100) {
-                $tx = mb_substr(strip_tags($tx), 0, 90);
-
-                $tx = "<br/>$tx...";
-            }
-            else {
-                $tx = "<br/>$tx";
-            }
-        }
-        else {
-            $tx = "";
-        }
-        echo '<img src="' . $filesroot . '/img/' . $imt . '" alt=""/><a href="?act=view&amp;file=' . $newf['id'] . '">' . htmlentities($newf['name'], ENT_QUOTES, 'UTF-8') . '</a> (' . $fsz . ' кб)' . $tx . '<br/>';
-        $nadir = $newf['refid'];
-        $pat = "";
-        while ($nadir != "") {
-            $dnew = mysql_query("select * from `download` where type = 'cat' and id = '" . $nadir . "'");
-            $dnew1 = mysql_fetch_array($dnew);
-            $pat = "$dnew1[text]/$pat";
-            $nadir = $dnew1['refid'];
-        }
-        $l = mb_strlen($pat);
-        $pat1 = mb_substr($pat, 0, $l - 1);
-        echo "[$pat1]</div>";
-        ++$i;
-    }
-    echo '<div class="phdr">' . $lng['total'] . ': ' . $total . '</div>';
-    if ($total > $kmess) {
-        echo '<p>' . functions::display_pagination('index.php?act=new&amp;', $start, $total, $kmess) . '</p>';
-        echo '<p><form action="index.php" method="get"><input type="hidden" value="new" name="act" /><input type="text" name="page" size="2"/><input type="submit" value="' . $lng['to_page'] . ' &gt;&gt;"/></form></p>';
-    }
+if(mysql_num_rows($cat_inf)){
+    $cat_inf = mysql_fetch_assoc($cat_inf);
+}else{
+    $cat_inf = array('way' => '');
 }
-else {
-    echo '<p>' . $lng['list_empty'] . '</p>';
-}
-echo "<p><a href='index.php?'>" . $lng['back'] . "</a></p>";
+
+$totalfile = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles`  WHERE `type` != 1 AND `status` = 1 && `way` LIKE '" . $cat_inf['way'] ."%'"), 0);
+if($totalfile > 100){ $totalfile = 100; }
+$zap = mysql_query("SELECT * FROM `downfiles` WHERE `type` != 1 AND `status` = 1 && `way` LIKE '" . $cat_inf['way'] ."%' ORDER BY `time` DESC LIMIT " . $start . "," . $kmess);
+while ($zap2 = mysql_fetch_array($zap)) {
+    echo ($i % 2) ? '<div class="list1">' : '<div class="list2">';
+    ++$i;
+        $tf = pathinfo($zap2['way'], PATHINFO_EXTENSION); // Тип файла
+    	if($tf == 'mp3'){
+			$set_view = array('variant' => 1, 'way_to_path' => 1);
+        }elseif((($tf == 'thm' or $tf == 'nth') && $down_setting['tmini']) || (($tf == '3gp' or $tf == 'mp4' or $tf == 'avi') && $down_setting['vmini']) || ($tf == 'jpg' or $tf == 'png' or $tf == 'jpeg' or $tf == 'gif')){
+            $set_view = array('link_download' => 1, 'div' => 1, 'way_to_path' => 1);
+        }else{
+            $set_view = array('variant' => 1,
+            'size' => 1, 'desc' => 1, 'count' => 1, 'div' => 1,
+            'comments' => 1, 'add_date' => 1, 'rating' => 1, 'way_to_path' => 1);
+        }
+        echo f_preview($zap2, $set_view, $tf);
+        echo '</div>';
+    }
+
+
+if ($totalfile > $kmess){
+    	echo '<div class = "phdr">' . functions::display_pagination('index.php?act=new&amp;cat='.$cat.'&amp;', $start, $totalfile, $kmess) . '';
+    	echo '</div><div class="menu"><form action="index.php" method="get"><input type="hidden" name="act" value="new"/><input type="hidden" name="cat" value="'.$cat.'"/><input type="text" name="page" size="2"/><input type="submit" value="'.$lng_dl['to_page'].' &gt;&gt;"/></form></div>';}
+
+echo '<div class="menu"><a href="index.html">'.$lng['back'].'</a></div>';
+

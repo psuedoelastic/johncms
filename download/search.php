@@ -1,132 +1,79 @@
 <?php
-
 /*
-////////////////////////////////////////////////////////////////////////////////
-// JohnCMS                             Content Management System              //
-// Официальный сайт сайт проекта:      http://johncms.com                     //
-// Дополнительный сайт поддержки:      http://gazenwagen.com                  //
-////////////////////////////////////////////////////////////////////////////////
-// JohnCMS core team:                                                         //
-// Евгений Рябинин aka john77          john77@gazenwagen.com                  //
-// Олег Касьянов aka AlkatraZ          alkatraz@gazenwagen.com                //
-//                                                                            //
-// Информацию о версиях смотрите в прилагаемом файле version.txt              //
-////////////////////////////////////////////////////////////////////////////////
+Скрипт загруз центра для JohnCMS
+Автор: Максим (simba)
+ICQ: 61590077
+Сайт: http://symbos.su
+R866920725287
+Z117468354234
 */
 
-defined('_IN_JOHNCMS') or die('Error: restricted access');
-require_once('../incfiles/head.php');
-echo '<div class="phdr"><a href="index.php"><b>' . $lng['downloads'] . '</b></a> | ' . $lng['search'] . '</div>';
-if (!empty ($_GET['srh'])) {
-    $srh = functions::check($_GET['srh']);
-} else {
-    if ($_POST['srh'] == "") {
-        echo functions::display_error($lng_dl['search_string_empty'], '<a href="index.php">' . $lng['back'] . '</a>');
-        require_once('../incfiles/end.php');
-        exit;
-    }
-    $srh = functions::check($_POST['srh']);
-}
-if (!empty ($_GET['srh'])) {
-    $srh = functions::check($_GET['srh']);
-}
-$psk = mysql_query("SELECT * FROM `download` WHERE  type='file'");
-if (empty ($_GET['start']))
-    $start = 0;
-else
-    $start = $_GET['start'];
-
-while ($array = mysql_fetch_array($psk)) {
-    if (stristr($array ['name'], $srh)) {
-        $res[] = $lng_dl['found_by_name'] . ":<br/><a href='?act=view&amp;file=" . $array ['id'] . "'>$array[name]</a><br/>";
-    }
-    if (stristr($array ['text'], $srh)) {
-        $res[] = $lng_dl['found_by_description'] . ":<br/><a href='?act=view&amp;file=" . $array ['id'] . "'>$array[name]</a><br/>$array[text]<br/>";
-    }
-}
-$g = count($res);
-if ($g == 0) {
-    echo '<p>' . $lng['search_results_empty'] . '</p>';
-} else {
-    echo '<p>' . $lng['search_results'] . '</p>';
-}
-if (empty ($_GET['page'])) {
-    $page = 1;
-} else {
-    $page = intval($_GET['page']);
-}
-$start = $page * 10 - 10;
-if ($g < $start + 10) {
-    $end = $g;
-} else {
-    $end = $start + 10;
-}
-for ($i = $start; $i < $end; $i++) {
-    $d = $i / 2;
-    $d1 = ceil($d);
-    $d2 = $d1 - $d;
-    $d3 = ceil($d2);
-    if ($d3 == 0) {
-        $div = "<div class='c'>";
-    } else {
-        $div = "<div class='b'>";
-    }
-    echo "$div $res[$i]</div>";
-}
-if ($g > 10) {
-    echo "<hr/>";
-
-    $ba = ceil($g / 10);
-    echo "Pages:<br/>";    //TODO: Переделать на новый листинг по страницам
-    $asd = $start - 10;
-    $asd2 = $start + 20;
-
-    if ($start != 0) {
-        echo '<a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($page - 1) . '">&lt;&lt;</a> ';
-    }
-    if ($asd < $g && $asd > 0) {
-        echo ' <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=1&amp;">1</a> .. ';
-    }
-    $page2 = $ba - $page;
-    $pa = ceil($page / 2);
-    $paa = ceil($page / 3);
-    $pa2 = $page + floor($page2 / 2);
-    $paa2 = $page + floor($page2 / 3);
-    $paa3 = $page + (floor($page2 / 3) * 2);
-    if ($page > 13) {
-        echo ' <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . $paa . '">' . $paa . '</a> <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($paa + 1) . '">' . ($paa + 1) .
-            '</a> .. <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($paa * 2) . '">' . ($paa * 2) . '</a> <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($paa * 2 + 1) . '">' . ($paa * 2 + 1) . '</a> .. ';
-    } elseif ($page > 7) {
-        echo ' <a href="?id=' . $id . '&amp;page=' . $pa . '">' . $pa . '</a> <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($pa + 1) . '">' . ($pa + 1) . '</a> .. ';
-    }
-    for ($i = $asd; $i < $asd2;) {
-        if ($i < $g && $i >= 0) {
-            $ii = floor(1 + $i / 10);
-
-            if ($start == $i) {
-                echo " <b>$ii</b>";
-            } else {
-                echo ' <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . $ii . '">' . $ii . '</a> ';
-            }
+define('_IN_JOHNCMS', 1);
+$textl = 'Загруз-Центр / Поиск файлов';
+$headmod = 'downsearch';
+require_once '../incfiles/core.php';
+require_once '../incfiles/head.php';
+require_once 'functions.php';
+echo '<div class="phdr"><b>Поиск файлов</b></div>';
+if (isset($_POST['submit']) || isset($_GET['submit'])){
+$search = isset ($_POST['search']) ? trim($_POST['query']) : '';
+$search = $search ? $search : rawurldecode(trim($_GET['query']));
+$search = preg_replace("/[^\w\x7F-\xFF\s]/", " ", $search);
+$type = isset ($_POST['search']) ? intval($_POST['search']) : intval($_GET['search']);
+if($type == 0){
+   $total = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE MATCH (`desc`) AGAINST ('" . mysql_real_escape_string($search) . "')"), 0); 
+   $arr = mysql_query("SELECT * FROM `downfiles` WHERE MATCH (`desc`) AGAINST ('" . mysql_real_escape_string($search) . "')  LIMIT ".$start.", ".$kmess);
+}else{
+   $total = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `name` LIKE '%" . mysql_real_escape_string($search) . "%'"), 0);
+   $arr = mysql_query("SELECT * FROM `downfiles` WHERE `name` LIKE '%" . mysql_real_escape_string($search) . "%' LIMIT ".$start.", ".$kmess); 
+}    
+if($total > 0){
+   while($mass = mysql_fetch_array($arr)){
+    echo ($i % 2) ? '<div class="list1">' : '<div class="list2">';
+    ++$i;
+        $tf = pathinfo($mass['way'], PATHINFO_EXTENSION); // Тип файла
+    	if($tf == 'mp3'){
+			$set_view = array('variant' => 1, 'way_to_path' => 1);
+        }elseif((($tf == 'thm' or $tf == 'nth') && $down_setting['tmini']) || (($tf == '3gp' or $tf == 'mp4' or $tf == 'avi') && $down_setting['vmini']) || ($tf == 'jpg' or $tf == 'png' or $tf == 'jpeg' or $tf == 'gif')){
+            $set_view = array('link_download' => 1, 'div' => 1, 'way_to_path' => 1);
+        }else{
+            $set_view = array('variant' => 1,
+            'size' => 1, 'desc' => 1, 'count' => 1, 'div' => 1,
+            'comments' => 1, 'add_date' => 1, 'rating' => 1, 'way_to_path' => 1);
         }
-        $i = $i + 10;
-    }
-    if ($page2 > 12) {
-        echo ' .. <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . $paa2 . '">' . $paa2 . '</a> <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($paa2 + 1) . '">' . ($paa2 + 1) .
-            '</a> .. <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($paa3) . '">' . ($paa3) . '</a> <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($paa3 + 1) . '">' . ($paa3 + 1) . '</a> ';
-    } elseif ($page2 > 6) {
-        echo ' .. <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . $pa2 . '">' . $pa2 . '</a> <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($pa2 + 1) . '">' . ($pa2 + 1) . '</a> ';
-    }
-    if ($asd2 < $g) {
-        echo ' .. <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . $ba . '">' . $ba . '</a>';
-    }
-    if ($g > $start + 10) {
-        echo ' <a href="index.php?act=search&amp;srh=' . $srh . '&amp;page=' . ($page + 1) . '">&gt;&gt;</a>';
-    }
-    echo "<form action='index.php'>To Page:<br/><input type='hidden' name='act' value='search'/><input type='hidden' name='srh' value='" . $srh .
-        "'/><input type='text' name='page' /><br/><input type='submit' value='Go!'/></form>";
+        echo f_preview($mass, $set_view, $tf);
+        echo '</div>';
+   }
+   echo'<div class="phdr">Найдено: '.$total.'</div>'; 
+if($total > $kmess){
+        echo '<div class="menu">' . functions::display_pagination('search.php?search=' . $type . '&amp;query='.$search.'&amp;submit=1&amp;', $start, $total, $kmess) . '</div>';
+        echo '<div class="menu"><form action="search.php" method="get"><input type="hidden" name="search" value="' . $type . '"/><input type="hidden" name="query" value="' . $search . '"/><input type="hidden" name="submit" value="1"/><input type="text" name="page" size="2"/><input type="submit" value="К странице &gt;&gt;"/></form></div>';
+        }
+        echo '<div class="menu"><a href="search.php">Новый поиск</a><br/>';
+         echo '<a href="index.html">В загруз-центр</a></div>';
+    
+}else{
+    echo'<div class="rmenu">Поиск не дал результатов. Попробуйте сформулировать запрос по другому и повторите поиск.<br/>
+    <a href="search.php">Повторить поиск</a></div>';
+     echo '<div class="menu"><a href="index.html">В загруз-центр</a></div>';
+}  
+    
+    }else{
+echo'<form action="search.php?" method="post">
+<div class="gmenu">Введите запрос:<br/>
+<input type="text" name="query"/><br/><small>Длинна запроса по описанию не менее 4 букв</small></div>';
+
+echo'<div class="menu">Искать по:<br/>';
+echo '<input name="search" type="radio" value="0" checked="checked" />';
+echo 'Описанию<br/>';
+echo '<input name="search" type="radio" value="1" />';
+echo 'Названию</div>
+<div class="menu"><input type="submit" name="submit" value="Искать!"/></div>
+</form>';       
+ echo '<div class="menu"><a href="index.html">В загруз-центр</a></div>';
 }
-if ($g != 0) {
-    echo "<div class='phdr'>" . $lng['total'] . ": $g</div>";
-}
-echo '<p><a href="?">' . $lng['downloads'] . '</a></p>';
+
+
+require_once '../incfiles/end.php';
+
+?>
