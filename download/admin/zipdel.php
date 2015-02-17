@@ -29,11 +29,11 @@ if ($_POST['submit'])
         {
             $ok++;
             $loadroot = str_replace("..", "", $loadroot);
-            $zip = new PclZip($_SERVER['DOCUMENT_ROOT'] . $loadroot . '/' . $zap2[way]);
+            $zip = new PclZip(ROOTPATH . $loadroot . '/' . $zap2['way']);
             $ext = $zip->delete(PCLZIP_OPT_BY_NAME, $f);
             if (!$ext)
             {
-                echo '<div class="rmenu">Не удалось удалить файл в след. архиве: ' . $loadroot . '/' . $zap2[way] . '</div>';
+                echo '<div class="rmenu">Не удалось удалить файл в след. архиве: ' . $loadroot . '/' . $zap2['way'] . '</div>';
             }
         }
     }
@@ -51,7 +51,3 @@ else
 
 }
 echo '<div class="gmenu"><a href="admin.php">Админка</a></div>';
-
-
-
-?>

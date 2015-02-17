@@ -11,7 +11,7 @@ Z117468354234
 /////////////////////////////////////
 // Класс для получения инфы из jar //
 /////////////////////////////////////
-require_once $_SERVER['DOCUMENT_ROOT'].'/download/classes/pclzip.lib.php';
+require_once 'pclzip.lib.php';
 
 class JarInfo{
     private $mimetype;

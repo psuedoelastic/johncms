@@ -26,11 +26,11 @@ if ($ver) {
         {
             $ok++;
             $loadroot = str_replace("..", "", $loadroot);
-            $zip = new PclZip($_SERVER['DOCUMENT_ROOT'] . $loadroot . '/' . $zap2[way]);
+            $zip = new PclZip(ROOTPATH . $loadroot . '/' . $zap2['way']);
             $add = $zip->add($down_setting['zipfile'], PCLZIP_OPT_ADD_PATH, $sdf, PCLZIP_OPT_REMOVE_ALL_PATH);
             if (!$add)
             {
-                echo '<div class="rmenu">Файл не добавлен в архив! ' . $loadroot . '/' . $zap2[way] . '</div>';
+                echo '<div class="rmenu">Файл не добавлен в архив! ' . $loadroot . '/' . $zap2['way'] . '</div>';
             }
         }
     }
@@ -44,4 +44,3 @@ else
 }
 
 echo '<div class="gmenu"><a href="admin.php">Админка</a></div>';
-?>

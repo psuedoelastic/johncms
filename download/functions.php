@@ -21,7 +21,7 @@ $loadroot = $filesroot . '/files';  /////// Папка с файлами
 require_once 'classes/classImageEdit.php';
 require_once 'classes/classJarInfo.php';
 //////////// Получаем основные настройки загруза ////////////
-$file = $_SERVER['DOCUMENT_ROOT'] . '/download/set.dat';
+$file = 'set.dat';
 $down_setting = file_get_contents($file);
 $down_setting = unserialize($down_setting);
 

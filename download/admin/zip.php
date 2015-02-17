@@ -17,7 +17,7 @@ require_once 'classes/pclzip.lib.php';
 $zip_act = isset($_GET['zip_act']) ? $_GET['zip_act'] : '';
 $file = functions::check($_GET['file']);
 $file_id = intval($_GET['file_id']);
-$file1 = $_SERVER['DOCUMENT_ROOT'].'/'.$downpat.'/'.$file;
+$file1 = ROOTPATH . $downpat . '/' . $file;
 $zip = new PclZip($file1);
 
 switch ($zip_act){

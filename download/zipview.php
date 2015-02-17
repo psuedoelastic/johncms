@@ -22,7 +22,7 @@ if ($down_setting['zipview'])
     $file = functions::check($_GET['file']);
     $file_id = intval($_GET['file_id']);
 
-    $file1 = $_SERVER['DOCUMENT_ROOT'].'/'.$downpat.'/'.$file;
+    $file1 = ROOTPATH . $downpat . '/' .$file;
 
     $zip = new PclZip($file1);
     switch ($act)

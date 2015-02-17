@@ -9,7 +9,7 @@ Z117468354234
 */
 require_once 'classes/classImageEdit.php';
 
-$file = $_SERVER['DOCUMENT_ROOT'].'/download/set.dat';
+$file = 'set.dat';
 $down_setting = file_get_contents($file);
 $down_setting = unserialize($down_setting);
 
