@@ -113,3 +113,15 @@ if ($set['gzip'] && @extension_loaded('zlib')) {
 } else {
     ob_start();
 }
+
+
+/**
+ * Prints human-readable and formatted information about a variable
+ * @param $var
+ */
+function p($var)
+{
+    echo '<pre>';
+    print_r($var);
+    echo '</pre>';
+}

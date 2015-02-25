@@ -1,9 +1,12 @@
 <?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-Сайт: http://symbos.su
-*/
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ */
 
 define('_IN_JOHNCMS', 1);
 
@@ -16,12 +19,30 @@ $sort = isset($_GET['sort']) ? $_GET['sort'] : "";
 $tree = array();
 $dirid = $cat;
 
+// Access control
+$error = '';
+
+if (empty($set['mod_down']) AND $rights < 7)
+{
+    $error = $lng_dl['downloads_closed'];
+}
+elseif(!empty($set['mod_down']) AND $set['mod_down'] == 1 AND !$user_id)
+{
+    $error = $lng['access_guest_forbidden'];
+}
+
+if (!empty($error))
+{
+    require_once('../incfiles/head.php');
+    echo '<div class="rmenu"><p>' . $error . '</p></div>';
+    require_once("../incfiles/end.php");
+    exit;
+}
+
 $do = array('new', 'rat', 'bookmarks');
 if (in_array($act, $do))
 {
-
     include_once($act . '.php');
-
 }
 else
 {
@@ -55,7 +76,6 @@ else
         echo '<img src="img/new.png" alt="."/> <a href="new.html">' . $lng_dl['last_100_files'] . '</a><br/>';
         echo '<img src="img/new_dir.gif" alt="."/> <a href="top.html">' . $lng_dl['top_files'] . '</a><br />';
         echo '<img src="img/peopl.png" alt="."/> <a href="top_users.php">' . $lng_dl['user_rating'] . '</a></div><hr />';
-
 
     } else
     {
@@ -133,10 +153,9 @@ else
             //echo 'Кэш обновлен или создан!';
         }
 
-    } else
+    }
+    else
     {
-
-
         $req = mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `type` != '1' AND `pathid` = '" . $cat . "' AND `status` = 1");
         $totalfile = mysql_result($req, 0);
 
