@@ -1,15 +1,16 @@
 <?php
 /**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
  * @var $lng_dl
+ * @var $lng
  */
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+
 
 defined('_IN_JOHNCMS') or die('Error:restricted access');
 require_once '../incfiles/head.php';
@@ -24,7 +25,7 @@ $id = intval(trim($_GET['id']));
 $typ = mysql_query("select * from `downfiles` where id='" . $id . "';");
 $ms = mysql_fetch_array($typ);
 
-if ($ms[type]){
+if ($ms['type']){
     echo 'Ошибка<br/><a href="index.php?">'.$lng['back'].'</a><br/>';
     include_once ('../incfiles/end.php');
     exit; }
@@ -68,4 +69,3 @@ $goll = !$ms['gol'] ? $user_id : $ms['gol'].'|'.$user_id;
 mysql_query("update `downfiles` set `rating` = '" . $rat1 . "', `gol` = '".$goll."' where id = '" . $id . "';");
 echo $lng_dl['rating_set']."<br/><a href='file_" . $id . ".html'>".$lng['back']."</a><br/>";
 
-?>

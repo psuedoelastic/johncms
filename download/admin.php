@@ -1,16 +1,15 @@
 <?php
 /**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
  * @var $lng_dl
  */
 
-/*
-Скрипт загруз центра под JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
 
 // TODO Переделать файл полностью
 
@@ -550,4 +549,3 @@ if ($rights == 4 || $rights >= 9)
     header("Location: ../index.php?err");
 }
 require_once '../incfiles/end.php';
-?>

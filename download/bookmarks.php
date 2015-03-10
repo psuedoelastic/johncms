@@ -1,15 +1,14 @@
 <?php
 /**
- * @var $lng
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng_dl
  */
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
 
 define('_IN_JOHNCMS', 1);
 $textl = 'Закладки';

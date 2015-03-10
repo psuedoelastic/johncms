@@ -1,24 +1,27 @@
 <?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng_dl
+ */
 
 define('_IN_JOHNCMS', 1);
 $headmod = 'loadtop';
-$textl = 'Загруз-Центр / Топ файлов';
 require_once '../incfiles/core.php';
 require_once 'functions.php';
-$cat = intval($_GET['cat']);
 
+$textl = $lng_dl['downloads'].' / '.$lng_dl['top_files'];
+$cat = intval($_GET['cat']);
 $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
 
 require_once '../incfiles/head.php';
-echo'<div class="phdr">Топ файлов</div>';
+
+echo'<div class="phdr">'.$lng_dl['top_files'].'</div>';
 
 $cat_inf = mysql_query("SELECT * FROM `downpath` WHERE `id` = '" . $cat . "' LIMIT 1");
 
@@ -39,11 +42,11 @@ $totalfile = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles`  WHERE `
          switch ($sort){
          case "rating":
          $zap = mysql_query("SELECT * FROM `downfiles` WHERE `type` != 1 AND `status` = 1 && `way` LIKE '" . $cat_inf['way'] ."%' ORDER BY `rating` DESC LIMIT " . $start . "," . $kmess);
-         echo'<div class="menu">Сортировка: <a href="top.html?cat='.$cat.'&amp;sort=count">Скачивания</a> | <b>Рейтинг</b></div>';
+         echo'<div class="menu">'.$lng_dl['sorting'].': <a href="top.html?cat='.$cat.'&amp;sort=count">'.$lng_dl['loads_count'].'</a> | <b>'.$lng_dl['rating'].'</b></div>';
          break;
          default:
          $zap = mysql_query("SELECT * FROM `downfiles` WHERE `type` != 1 AND `status` = 1 && `way` LIKE '" . $cat_inf['way'] ."%' ORDER BY `count` DESC LIMIT " . $start . "," . $kmess);
-         echo'<div class="menu">Сортировка: <b>Скачивания</b> | <a href="top.html?cat='.$cat.'&amp;sort=rating">Рейтинг</a></div>';
+         echo'<div class="menu">'.$lng_dl['sorting'].': <b>'.$lng_dl['loads_count'].'</b> | <a href="top.html?cat='.$cat.'&amp;sort=rating">'.$lng_dl['rating'].'</a></div>';
          break;
          }
 
@@ -68,10 +71,9 @@ while ($zap2 = mysql_fetch_array($zap))
 if ($totalfile > $kmess)
 {
     echo '<div class="phdr">' . functions::display_pagination('top.html?cat='.$cat.'&amp;', $start, $totalfile, $kmess) . '</div>';
-    echo '<div class="menu"><form action="top.html" method="get"><input type="hidden" name="cat" value="'.$cat.'"/><input type="text" name="page" size="2"/><input type="submit" value="К странице &gt;&gt;"/></form></div>';
+    echo '<div class="menu"><form action="top.html" method="get"><input type="hidden" name="cat" value="'.$cat.'"/><input type="text" name="page" size="2"/><input type="submit" value="'.$lng_dl['to_page'].' &gt;&gt;"/></form></div>';
 }
 
-echo '<div class="menu"><a href="index.html">К категориям</a></div>';
+echo '<div class="menu"><a href="index.html">'.$lng['back'].'</a></div>';
 
 require_once '../incfiles/end.php';
-?>
