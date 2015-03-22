@@ -74,6 +74,6 @@ if ($totalfile > $kmess)
     echo '<div class="menu"><form action="top.html" method="get"><input type="hidden" name="cat" value="'.$cat.'"/><input type="text" name="page" size="2"/><input type="submit" value="'.$lng_dl['to_page'].' &gt;&gt;"/></form></div>';
 }
 
-echo '<div class="menu"><a href="index.html">'.$lng['back'].'</a></div>';
+echo '<div class="menu"><a href="/download/">'.$lng['back'].'</a></div>';
 
 require_once '../incfiles/end.php';

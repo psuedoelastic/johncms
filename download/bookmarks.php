@@ -8,6 +8,7 @@
  * @author      http://johncms.com/about
  *
  * @var $lng_dl
+ * @var $lng
  */
 
 define('_IN_JOHNCMS', 1);
@@ -73,8 +74,14 @@ switch($dejst){
     }
     else
     {
-        echo'<div class="rmenu">'.$lng_dl['list_is_empty'].'</div>';
-        echo'<div class="menu"><a href="index.php">'.$lng['back'].'</a></div>';
+        ?>
+        <div class="menu">
+            <p>
+                <?= $lng['list_empty'] ?><br>
+                <a href="/download/"><?= $lng['back'] ?></a>
+            </p>
+        </div>
+        <?
     }
     break;
     }

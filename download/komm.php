@@ -22,12 +22,17 @@ $komid = intval($_GET['komid']);
 $act = isset($_GET['act']) ? $_GET['act'] : '';
 
 
-if (empty($set['mod_down_comm']))
-{
-    echo '<div class="rmenu">'.$lng_dl['comments_disabled'].'</div>
-    <div class="gmenu"><a href="index.php">'.$lng['back'].'</a></div>';
+if (empty($set['mod_down_comm'])){
+    echo functions::display_error($lng_dl['comments_disabled'], '<a href="/download/">'.$lng['back'].'</a>');
     include_once '../incfiles/end.php';
-    exit;   
+    exit;
+}
+
+$file_array = DownFile::getById($id);
+if(!is_array($file_array)){
+    echo functions::display_error($lng_dl['file_not_found'], '<a href="/download/">'.$lng['back'].'</a>');
+    include_once '../incfiles/end.php';
+    exit;
 }
     
     
@@ -45,7 +50,7 @@ if (empty($set['mod_down_comm']))
     if (!$user_id)
     {
         echo '<div class="rmenu">'.$lng_dl['register_only'].'</div>
-        <div class="menu"><a href="index.php">'.$lng['back'].'</a></div>';
+        <div class="menu"><a href="/download/">'.$lng['back'].'</a></div>';
         include_once '../incfiles/end.php';
         exit;
     }
@@ -94,7 +99,7 @@ if (empty($set['mod_down_comm']))
     if (!$user_id)
     {
         echo '<div class="rmenu">'.$lng_dl['register_only'].'</div>
-        <div class="menu"><a href="index.php">'.$lng['back'].'</a></div>';
+        <div class="menu"><a href="/download/">'.$lng['back'].'</a></div>';
         include_once '../incfiles/end.php';
         exit;
     }
@@ -181,8 +186,7 @@ if (empty($set['mod_down_comm']))
     echo'<div class="phdr">'.$lng_dl['add_comment'].'</div>';
     if (!$user_id)
     {
-        echo '<div class="rmenu">'.$lng_dl['register_only'].'</div>
-        <div class="menu"><a href="index.php?">'.$lng['back'].'</a></div>';
+        echo functions::display_error($lng_dl['register_only'], '<a href="/download/">'.$lng['back'].'</a>');
         include_once '../incfiles/end.php';
         exit;
     }
@@ -235,7 +239,7 @@ if (empty($set['mod_down_comm']))
         <input type="submit" name="submit" value="'.$lng_dl['save'].'"/></div>
         </form>';
         echo'<div class="menu"><a href="komm.php?id='.$id.'">'.$lng['back'].'</a></div>';
-        echo '<div class="menu"><a href="file_' . $id . '.html">'.$lng_dl['back_to_file'].'</a></div>';
+        echo '<div class="menu"><a href="'.$file_array['FILE_PAGE_URL'].'">'.$lng_dl['back_to_file'].'</a></div>';
     }
     break;
     
@@ -248,7 +252,7 @@ if (empty($set['mod_down_comm']))
     {
         mysql_query("DELETE FROM `downkomm` WHERE `id` = '".$komid."' LIMIT 1");
         echo '<div class="gmenu">'.$lng_dl['deleted'].'</div>';
-        echo '<div class="menu"><a href="file_' . $id . '.html">'.$lng_dl['back_to_file'].'</a></div>';
+        echo '<div class="menu"><a href="'.$file_array['FILE_PAGE_URL'].'">'.$lng_dl['back_to_file'].'</a></div>';
     }
     else
     {
@@ -305,7 +309,7 @@ if (empty($set['mod_down_comm']))
    	echo '<div class="menu">' . functions::display_pagination('komm.php?id='.$id.'&amp;', $start, $total, $kmess) . '';
    	echo '<form action="komm.php" method="get"><input type="hidden" name="id" value="'.$id.'"/><input type="text" name="page" size="2"/><input type="submit" value="' . $lng_dl['to_page'] . ' &gt;&gt;"/></form></div>';
     }
-    echo'<div class="gmenu"><a href="file_' . $id . '.html">'.$lng_dl['back_to_file'].'</a></div>';
+    echo'<div class="gmenu"><a href="'.$file_array['FILE_PAGE_URL'].'">'.$lng_dl['back_to_file'].'</a></div>';
     break;
 }
 

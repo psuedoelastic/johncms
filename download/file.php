@@ -319,8 +319,7 @@ if (mysql_num_rows($file))
         {
             if ($tf == "zip")
             {
-                echo '<div class="menu"><img src="img/rar.png" alt="."/> <a href="zipview.php?file=' .
-                    $file['way'] . '&amp;file_id=' . $viewf . '">'.$lng_dl['view_zip'].'</a></div>';
+                echo '<div class="menu"><img src="img/rar.png" alt="."/> <a href="zipview.php?file_id=' . $viewf . '">'.$lng_dl['view_zip'].'</a></div>';
             }
         }
 
@@ -351,8 +350,7 @@ if (mysql_num_rows($file))
                 echo '&nbsp;[' . $file2['count'] . ']<br/>'.functions::checkout($file2['desc'], 1, 1).'</div>';
 
                 if ($tf == "zip" && $down_setting['zipview'])
-                    echo '<img src="img/rar.png" alt="."/> <a href="zipview.php?file=' . $file2[way] .
-                        '&amp;file_id=' . $viewf . '">'.$lng_dl['view_zip'].'</a><br/>';
+                    echo '<img src="img/rar.png" alt="."/> <a href="zipview.php?file_id=' . $viewf . '">'.$lng_dl['view_zip'].'</a><br/>';
             }
         }
     }
@@ -364,18 +362,12 @@ if (mysql_num_rows($file))
     //////////////////////////////////
     /////// Поделиться ссылкой ///////
     //////////////////////////////////
-    echo '<div class="menu">'.$lng_dl['share'].':<br/>
-    <noindex>
-    <a href="http://www.facebook.com/share.php?u=' . $home . '/download/'.name_replace($namee[0]).'_' .
-        $viewf . '.html&amp;t='.str_replace('#FILE_NAME#', $namee[0], $lng_dl['file_browser_title']).'"><img src="img/facebook.gif" alt="FaceBook" title="'.$lng_dl['share_on'].'FaceBook"/></a>&nbsp;<a href="http://twitter.com/home/?status=' .
-        $home . '/download/'.name_replace($namee[0]).'_' . $viewf . '.html+'.str_replace('#FILE_NAME#', $namee[0], $lng_dl['file_browser_title']).'"><img src="img/twitter.gif" alt="twitter" title="'.$lng_dl['share_on'].'twitter"/></a>&nbsp;<a href="http://vkontakte.ru/share.php?url=' .
-        $home . '/download/'.name_replace($namee[0]).'_' . $viewf .
-        '.html"><img src="img/vk.gif" alt="Вконтакте" title="'.$lng_dl['share_on'].'Вконтакте"/></a>&nbsp;<a href="http://connect.mail.ru/share?share_url=' .
-        $home . '/download/'.name_replace($namee[0]).'_' . $viewf .
-        '.html"><img src="img/mailru.gif" alt="Mail.ru" title="'.$lng_dl['share_on'].'mail.ru"/></a>&nbsp;<a href="http://www.livejournal.com/update.bml?event=' .
-        $home . '/download/'.name_replace($namee[0]).'_'. $viewf . '.html&amp;subject='.str_replace('#FILE_NAME#', $namee[0], $lng_dl['file_browser_title']).'"><img src="img/lj.gif" alt="Livejournal" title="'.$lng_dl['share_on'].'Livejournal"/></a>
-        </noindex>
-    </div>';
+
+    ?>
+    <div class="menu">
+        <script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"></script><div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="button" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir"></div>
+    </div>
+    <?
 
     if ($down_setting['komm'])
     {

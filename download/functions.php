@@ -564,9 +564,8 @@ function bb_past($form_name, $field_name)
     return $out;
 }
 
-///////////////////////////////
-/// Функция обработки имени ///
-///////////////////////////////
+
+/** @deprecated use DownUtil::translit() */
 function name_replace($name)
 {
     //////////// Транслитируем имя файла ///////

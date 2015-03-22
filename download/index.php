@@ -6,6 +6,8 @@
  * @license     LICENSE.txt (see attached file)
  * @version     VERSION.txt (see attached file)
  * @author      http://johncms.com/about
+ *
+ * @var $lng
  */
 
 define('_IN_JOHNCMS', 1);
@@ -68,15 +70,21 @@ else
     if (empty($_GET['cat']))
     {
         // Заголовок начальной страницы загрузок
-        echo '<div class="phdr">' . $lng_dl['downloads'] . '</div>';
-        // Ссылка на новые файлы
-        echo '<div class="list2">';
-        if ($user_id)
-            echo '<img src="img/apply.png" alt="."/> <a href="index.php?act=bookmarks">' . $lng_dl['bookmarks'] . '</a><br/>';
-        echo '<img src="img/new.png" alt="."/> <a href="new.html">' . $lng_dl['last_100_files'] . '</a><br/>';
-        echo '<img src="img/new_dir.gif" alt="."/> <a href="top.html">' . $lng_dl['top_files'] . '</a><br />';
-        echo '<img src="img/peopl.png" alt="."/> <a href="top_users.php">' . $lng_dl['user_rating'] . '</a></div><hr />';
+        ?>
+        <div class="phdr"><?= $lng_dl['downloads'] ?></div>
+        <div class="topmenu">
+            <a href="search.php"><?= $lng_dl['search_files'] ?></a>
+            <?php if($user_id): ?>
+                | <a href="index.php?act=bookmarks"><?= $lng_dl['bookmarks'] ?></a>
+            <?php endif; ?>
+        </div>
+        <div class="gmenu">
+            <?= functions::image('new.png') ?><a href="index.php?act=new"><?= $lng_dl['last_100_files'] ?></a><br>
+            <?= functions::image('new_dir.gif') ?><a href="top.php"><?= $lng_dl['top_files'] ?></a><br>
+            <?= functions::image('peopl.png') ?><a href="top_users.php"><?= $lng_dl['user_rating'] ?></a>
+        </div>
 
+        <?
     } else
     {
         echo '<div class="phdr"><a href="index.html">' . $lng_dl['downloads'] . '</a> | ';
@@ -218,8 +226,13 @@ else
 
         } else
         {
-
-            echo '<div class="rmenu">' . $lng_dl['section_is_empty'] . '</div>';
+            ?>
+            <div class="menu">
+                <p>
+                    <?= $lng['list_empty'] ?>
+                </p>
+            </div>
+            <?
         }
 
         echo '<div class="phdr">' . $lng_dl['all_files'] . ': ' . $totalfile . '</div>';
@@ -239,10 +252,9 @@ else
         }
     }
 
-    echo '<div class="menu"><img src="img/search.png" alt="."/><a href="search.php">' . $lng_dl['search_files'] . '</a></div>';
     if (!empty($_GET['cat']))
     {
-        echo '<div class="menu"><a href="index.html">' . $lng_dl['back_to_downloads'] . '</a><br/>';
+        echo '<div class="menu"><a href="index.php">' . $lng_dl['back_to_downloads'] . '</a><br/>';
         foreach ($tree as $value)
         {
             echo $value;
@@ -250,17 +262,19 @@ else
         }
         echo '</div>';
     }
-    if ($rights == 4 || $rights >= 6)
-    {
-        echo '<div class="func">';
-        if ($totalcat > 0)
-        {
-            echo '- <a href="admin.php?act=import&amp;cat=' . $cat . '">' . $lng_dl['import_file'] . '</a><br/>';
-            echo '- <a href="admin.php?act=upload&amp;cat=' . $cat . '">' . $lng_dl['upload_file'] . '</a><br/>';
-        }
-        echo '- <a href="admin.php">' . $lng_dl['admin_panel'] . '</a></div>';
-    }
 
+    ?>
+    <?php if($rights == 4 || $rights >= 6): ?>
+        <p>
+            <?php if($totalcat > 0): ?>
+                <a href="admin.php?act=import&amp;cat=' . $cat . '"><?= $lng_dl['import_file'] ?></a><br>
+                <a href="admin.php?act=upload&amp;cat=' . $cat . '"><?= $lng_dl['upload_file'] ?></a><br>
+            <?php endif; ?>
+            <a href="admin.php"><?= $lng_dl['admin_panel'] ?></a>
+        </p>
+    <?php endif; ?>
+
+    <?
 }
 require_once '../incfiles/end.php';
 
