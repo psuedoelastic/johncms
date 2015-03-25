@@ -24,17 +24,13 @@ $dirid = $cat;
 // Access control
 $error = '';
 
-if (empty($set['mod_down']) AND $rights < 7)
-{
+if (empty($set['mod_down']) AND $rights < 7) {
     $error = $lng_dl['downloads_closed'];
-}
-elseif(!empty($set['mod_down']) AND $set['mod_down'] == 1 AND !$user_id)
-{
+} elseif (!empty($set['mod_down']) AND $set['mod_down'] == 1 AND !$user_id) {
     $error = $lng['access_guest_forbidden'];
 }
 
-if (!empty($error))
-{
+if (!empty($error)) {
     require_once('../incfiles/head.php');
     echo '<div class="rmenu"><p>' . $error . '</p></div>';
     require_once("../incfiles/end.php");
@@ -42,14 +38,10 @@ if (!empty($error))
 }
 
 $do = array('new', 'rat', 'bookmarks');
-if (in_array($act, $do))
-{
+if (in_array($act, $do)) {
     include_once($act . '.php');
-}
-else
-{
-    while ($dirid != '0' && $dirid != "")
-    {
+} else {
+    while ($dirid != '0' && $dirid != "") {
         $req = mysql_query("SELECT * FROM `downpath` WHERE `id` = '" . $dirid .
             "' LIMIT 1");
         $res = mysql_fetch_array($req);
@@ -59,39 +51,33 @@ else
     krsort($tree);
     $cdir = array_pop($tree);
     $valueeq = '';
-    foreach ($tree as $valuee)
-    {
+    foreach ($tree as $valuee) {
         $valueeq = '' . $valueeq . $valuee . ' / ';
     }
     $textl = $lng_dl['downloads'] . ' ' . strip_tags($valueeq . $cdir) . '';
     require_once '../incfiles/head.php';
 
 
-    if (empty($_GET['cat']))
-    {
+    if (empty($_GET['cat'])) {
         // Заголовок начальной страницы загрузок
         ?>
-        <div class="phdr"><?= $lng_dl['downloads'] ?></div>
+        <div class="phdr"><strong><?= $lng_dl['downloads'] ?></strong></div>
         <div class="topmenu">
             <a href="search.php"><?= $lng_dl['search_files'] ?></a>
-            <?php if($user_id): ?>
+            <?php if ($user_id): ?>
                 | <a href="index.php?act=bookmarks"><?= $lng_dl['bookmarks'] ?></a>
             <?php endif; ?>
         </div>
-        <div class="gmenu">
-            <p>
-                <?= functions::image('new.png') ?><a href="index.php?act=new"><?= $lng_dl['last_100_files'] ?></a><br>
-                <?= functions::image('rate.gif') ?><a href="top_users.php"><?= $lng_dl['user_rating'] ?></a><br>
-                <?= functions::image('rate.gif') ?><a href="top.php"><?= $lng_dl['top_files'] ?></a>
-            </p>
+        <div class="gmenu blockpad">
+            <?= functions::image('new.png') ?><a href="index.php?act=new"><?= $lng_dl['last_100_files'] ?></a><br>
+            <?= functions::image('rate.gif') ?><a href="top_users.php"><?= $lng_dl['user_rating'] ?></a><br>
+            <?= functions::image('rate.gif') ?><a href="top.php"><?= $lng_dl['top_files'] ?></a>
         </div>
 
-        <?php
-    } else
-    {
+    <?php
+    } else {
         echo '<div class="phdr"><a href="index.html">' . $lng_dl['downloads'] . '</a> | ';
-        foreach ($tree as $value)
-        {
+        foreach ($tree as $value) {
             echo $value;
             if ($value != $cdir)
                 echo ' | ';
@@ -102,27 +88,22 @@ else
 
     $totalcat = mysql_result(mysql_query("SELECT COUNT(*) FROM `downpath` WHERE `refid` = '" . $cat . "'"), 0);
 
-    if ($totalcat > 0)
-    {
+    if ($totalcat > 0) {
         $zap = mysql_query("SELECT * FROM `downpath` WHERE `refid` = '" . $cat . "' ORDER BY `position` ASC LIMIT " . $start . "," . $kmess);
         $cachetime = time() - $down_setting['cachetime'] * 3600; // Время кэширования
 
-        if (is_file('cache/' . $cat . '.dat') && filemtime('cache/' . $cat . '.dat') > $cachetime)
-        {
+        if (is_file('cache/' . $cat . '.dat') && filemtime('cache/' . $cat . '.dat') > $cachetime) {
             $count_cache = file_get_contents('cache/' . $cat . '.dat');
             $count_cache = unserialize($count_cache);
             $opencache = 'true';
-        } else
-        {
+        } else {
             $count_cache = array();
         }
         $i = 0;
-        while ($zap2 = mysql_fetch_array($zap))
-        {
+        while ($zap2 = mysql_fetch_array($zap)) {
             echo ($i % 2) ? '<div class="list1">' : '<div class="list2">';
             ++$i;
-            if (!$count_cache[$zap2['id']])
-            {
+            if (!$count_cache[$zap2['id']]) {
                 ////////// счётчики //////////
                 $countf = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `type` != 1 AND `status` = 1 && `way` LIKE '" . $zap2['way'] . "%' "), 0);
                 $old = time() - (3 * 24 * 3600);
@@ -131,61 +112,49 @@ else
                 //$countp = mysql_result(mysql_query("SELECT COUNT(*) FROM `downpath` WHERE `way` LIKE '" . $zap2['way'] ."%';"), 0);
                 //$countp--; // Счётчик папок. Раскомментировать если нужен.
 
-                if ($countnf)
-                {
+                if ($countnf) {
                     $countnf = '/<span class="red">+' . $countnf . '</span>';
-                } else
-                {
+                } else {
                     $countnf = '';
                 }
                 $count_cache[$zap2['id']] = $countf . $countnf; // Сюда вставлять $countp если нужен счётчик папок.
             }
             echo '<img src="img/dir.png" alt="."/> <a href="dir_' . $zap2['id'] . '.html">' . $zap2['name'] . '</a> (' . $count_cache[$zap2['id']] . ')<br/>';
-            if ($zap2['desc'])
-            {
+            if ($zap2['desc']) {
                 echo '<div class="sub">' . $zap2['desc'] . '</div>';
             }
             echo '</div>';
         }
         echo '<div class="phdr">' . $lng_dl['all_dirs'] . ': ' . $totalcat . '</div>';
-        if ($totalcat > $kmess)
-        {
+        if ($totalcat > $kmess) {
             echo '<div class="topmenu">';
             echo '' . functions::display_pagination('index.php?cat=' . $cat . '&amp;', $start, $totalcat, $kmess) . '</div>';
             echo '<p><form action="index.php" method="get"><input type="hidden" name="cat" value="' . $cat . '"/><input type="text" name="page" size="2"/><input type="submit" value="' . $lng_dl['to_page'] . ' &gt;&gt;"/></form></p>';
         }
 
         //// Создаём файл с кэшем если он устарел или его нет ////
-        if (!$opencache && $arr = fopen('cache/' . $cat . '.dat', "w"))
-        {
+        if (!$opencache && $arr = fopen('cache/' . $cat . '.dat', "w")) {
             fwrite($arr, serialize($count_cache));
             fclose($arr);
             //echo 'Кэш обновлен или создан!';
         }
 
-    }
-    else
-    {
+    } else {
         $req = mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `type` != '1' AND `pathid` = '" . $cat . "' AND `status` = 1");
         $totalfile = mysql_result($req, 0);
 
-        if ($totalfile > 0)
-        {
+        if ($totalfile > 0) {
             // Проверка установки сортировки
-            if ($sort)
-            {
+            if ($sort) {
                 $_SESSION['downsort'] = $sort;
-            } else
-            {
+            } else {
                 $sort = isset($_SESSION['downsort']) ? $_SESSION['downsort'] : '';
             }
             // Проверка упорядочивания
-            if (isset($_GET['orderby']))
-            {
+            if (isset($_GET['orderby'])) {
                 $order = $_GET['orderby'] == 'desc' ? 'desc' : 'asc';
                 $_SESSION['orderby'] = $order;
-            } else
-            {
+            } else {
                 $order = (isset($_SESSION['orderby']) && $_SESSION['orderby'] == 'desc') ? 'desc' : 'asc';
             }
             // Ссылки
@@ -204,19 +173,15 @@ else
 
             // Вывод списка файлов
             $i = 0;
-            while ($zap2 = mysql_fetch_array($zap))
-            {
+            while ($zap2 = mysql_fetch_array($zap)) {
                 echo ($i % 2) ? '<div class="list1">' : '<div class="list2">';
                 ++$i;
                 $tf = pathinfo($zap2['way'], PATHINFO_EXTENSION); // Тип файла
-                if ($tf == 'mp3')
-                {
+                if ($tf == 'mp3') {
                     $set_view = array('variant' => 1);
-                } elseif ((($tf == 'thm' or $tf == 'nth') && $down_setting['tmini']) || (($tf == '3gp' or $tf == 'mp4' or $tf == 'avi') && $down_setting['vmini']) || ($tf == 'jpg' or $tf == 'png' or $tf == 'jpeg' or $tf == 'gif'))
-                {
+                } elseif ((($tf == 'thm' or $tf == 'nth') && $down_setting['tmini']) || (($tf == '3gp' or $tf == 'mp4' or $tf == 'avi') && $down_setting['vmini']) || ($tf == 'jpg' or $tf == 'png' or $tf == 'jpeg' or $tf == 'gif')) {
                     $set_view = array('link_download' => 1, 'div' => 1);
-                } else
-                {
+                } else {
                     $set_view = array('variant'  => 1,
                                       'size'     => 1, 'desc' => 1, 'count' => 1, 'div' => 1,
                                       'comments' => 1, 'add_date' => 1, 'rating' => 1);
@@ -226,39 +191,34 @@ else
             }
 
 
-        } else
-        {
+        } else {
             ?>
             <div class="menu">
                 <p>
                     <?= $lng['list_empty'] ?>
                 </p>
             </div>
-            <?php
+        <?php
         }
 
         echo '<div class="phdr">' . $lng_dl['all_files'] . ': ' . $totalfile . '</div>';
-        if ($totalfile > $kmess)
-        {
+        if ($totalfile > $kmess) {
             echo '<div class="topmenu">';
             echo '' . functions::display_pagination('index.php?cat=' . $cat . '&amp;', $start, $totalfile, $kmess) . '';
             echo '</div><p><form action="index.php" method="get"><input type="hidden" name="cat" value="' . $cat . '"/><input type="text" name="page" size="2"/><input type="submit" value="' . $lng_dl['to_page'] . ' &gt;&gt;"/></form>';
             echo '</p>';
         }
 
-        $dost = mysql_query("select * from `downpath` where id = '" . $cat . "';");
+        $dost = mysql_query("SELECT * FROM `downpath` WHERE id = '" . $cat . "';");
         $dost = mysql_fetch_array($dost);
-        if ($dost['dost'] && $user_id != 0)
-        {
+        if ($dost['dost'] && $user_id != 0) {
             echo '<div class="menu"><img src="img/upload.png" alt="."/><a href="add_file.php?cat=' . $cat . '">' . $lng_dl['load_your_file'] . '</a></div>';
         }
     }
 
-    if (!empty($_GET['cat']))
-    {
+    if (!empty($_GET['cat'])) {
         echo '<div class="menu"><a href="index.php">' . $lng_dl['back_to_downloads'] . '</a><br/>';
-        foreach ($tree as $value)
-        {
+        foreach ($tree as $value) {
             echo $value;
             echo '<br/>';
         }
@@ -266,9 +226,9 @@ else
     }
 
     ?>
-    <?php if($rights == 4 || $rights >= 6): ?>
+    <?php if ($rights == 4 || $rights >= 6): ?>
         <p>
-            <?php if($totalcat > 0): ?>
+            <?php if ($totalcat > 0): ?>
                 <a href="admin.php?act=import&amp;cat=' . $cat . '"><?= $lng_dl['import_file'] ?></a><br>
                 <a href="admin.php?act=upload&amp;cat=' . $cat . '"><?= $lng_dl['upload_file'] ?></a><br>
             <?php endif; ?>
@@ -276,7 +236,7 @@ else
         </p>
     <?php endif; ?>
 
-    <?php
+<?php
 }
 require_once '../incfiles/end.php';
 
