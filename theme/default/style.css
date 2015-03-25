@@ -401,3 +401,12 @@ h4 {
     padding-top: 8px;
     padding-bottom: 8px;
 }
+
+.label {
+    font-size: 1.17em;
+    font-weight: bold;
+}
+
+.form-group {
+    padding: 5px 0;
+}

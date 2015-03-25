@@ -1,5 +1,4 @@
-<?php
-
+<?php defined('_IN_JOHNCMS') or die('Restricted access');
 /**
  * @package     JohnCMS
  * @link        http://johncms.com
@@ -62,6 +61,37 @@ class DownUtil
         $string = substr($string, 0, $max_len);
 
         return $string;
+    }
+
+
+    /**
+     * This method cleans cache
+     *
+     * @param $cache_type
+     * @return int - Deleted files count
+     */
+    public static function clearCache($cache_type)
+    {
+        $cache_dirs = array(
+            'count' => 'cache',
+            'screen' => 'graftemp'
+        );
+        $counter = 0;
+        if(array_key_exists($cache_type, $cache_dirs))
+        {
+            $directory = ROOTPATH.'download/'.$cache_dirs[$cache_type].'/';
+            $dir_files = scandir($directory);
+            foreach($dir_files as $file)
+            {
+                if(is_file($directory.$file) AND $file != '.htaccess')
+                {
+                    unlink($directory.$file);
+                    $counter++;
+                }
+            }
+        }
+
+        return $counter;
     }
 
 

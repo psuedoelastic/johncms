@@ -229,8 +229,8 @@ if (in_array($act, $do)) {
     <?php if ($rights == 4 || $rights >= 6): ?>
         <p>
             <?php if ($totalcat > 0): ?>
-                <a href="admin.php?act=import&amp;cat=' . $cat . '"><?= $lng_dl['import_file'] ?></a><br>
-                <a href="admin.php?act=upload&amp;cat=' . $cat . '"><?= $lng_dl['upload_file'] ?></a><br>
+                <a href="admin.php?act=import&amp;cat=<?= $cat ?>"><?= $lng_dl['import_file'] ?></a><br>
+                <a href="admin.php?act=upload&amp;cat=<?= $cat ?>"><?= $lng_dl['upload_file'] ?></a><br>
             <?php endif; ?>
             <a href="admin.php"><?= $lng_dl['admin_panel'] ?></a>
         </p>

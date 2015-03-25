@@ -1,99 +1,85 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
-///////////////////////////////////////////
-///////////// Создание папки //////////////
-///////////////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
 $cat = intval($_GET['cat']);
-echo '<div class="phdr">Создание папки</div>';
-
-if (isset($_POST['submit'])) {
-    $dirftp = functions::check($_POST['dirftp']);
-    $dirname = functions::check($_POST['dirname']);
-    $dirdesc = functions::check($_POST['dirdesc']);
-    $types = functions::check($_POST['types']);
-    $dost = intval($_POST['dost']);
-    $error = array();
-
-    if (preg_match("/[^a-z0-9.()_-]/i", $dirftp))
-        $error[] = 'В названии папки для фтп <b>' . $dirftp .
-            '</b> присутствуют недопустимые символы<br/>Разрешены только латинские символы, цифры и некоторые знаки ( .()_- )';
-
-    if (!$dirftp)
-        $error[] = 'Не заполнено название папки для фтп!';
-
-    if (!$dirname)
-        $error[] = 'Не заполнено Название папки для отображения!';
-
-    if ($dost) {
-        if (!$types)
-            $error[] = 'Должен быть минимум 1 тип файла разрешённый к загрузке!';
-    }
-
-    if ($cat) {
-        $cat1 = mysql_query("select * from `downpath` where id = '" . $cat . "';");
-        $adrdir = mysql_fetch_array($cat1);
-        $droot = $loadroot . '/' . $adrdir[way];
-        $dirr = $adrdir['way'] . $dirftp . '/';
-    } else {
-        $droot = $loadroot . '/';
-        $dirr = $dirftp . '/';
-    }
-
-    if (is_dir($droot . $dirftp))
-        $error[] = 'Такая папка уже существует в фтп! Измените имя и повторите операцию!';
-
-    if ($error) {
-        echo '<div class="rmenu">Обнаружены ошибки!</div>';
-        foreach ($error as $val) {
-            echo '<div class="rmenu">' . $val . '</div>';
-        }
-        echo '<div class="menu"><a href="admin.php?act=folder">Управление файлами и папками</a><br/>';
-        echo '<a href="admin.php">Админка</a></div>';
-        require_once ('../incfiles/end.php');
-        exit;
-    }
-
-
-    if (mkdir($droot . $dirftp, 0777)) {
-        chmod($droot . $dirftp, 0777);
-        mysql_query("INSERT INTO `downpath` SET `refid` = '" . $cat . "', `way` = '" . $dirr .
-            "', `name` = '" . $dirname . "', `desc` = '" . $dirdesc .
-            "', `position` = '0', `dost` = '" . $dost . "', `types` = '" . $types . "';");
-        echo '<div class="gmenu">Папка успешно создана!</div>';
-    }
-} else {
-    echo "<form action='admin.php?act=createdir&amp;cat=" . $_GET['cat'] .
-        "' method='post'>
-<div class='menu'>Название папки для фтп:<br/>
-<input type='text' name='dirftp'/></div><div class='menu'>
-Название для отображения:<br/>
-<input type='text' name='dirname'/></div><div class='menu'>
-Описание папки:<br/>
-<input type='text' name='dirdesc'/><br/>
-<small>Необязательный параметр</small></div><div class='menu'>
-Допустимые типы файлов:<br/>
-<input type='text' name='types'/><br/>
-<small>Заполнять через запятую: mp3,gif,zip,sis,exe (all - разрешить любые типы файлов *)</small></div><div class='menu'>
-<input type='checkbox' name='dost' value='1'/> Добавление файлов юзерами
-</div><div class='menu'>
-<input type='submit' name='submit' value='Создать'/></div>
-</form>";
-
-echo '<div class="rmenu">* Внимание! Если Ваш хостинг некорректно воспринимает htaccess, есть риск что Вам зальют php скрипт. 
-Убедитесь, что выгруженные через форму php файлы не исполняются!</div>';
-
-}
-echo '<div class="menu"><a href="admin.php?act=folder">Управление файлами и папками</a></div>';
-
-echo '<div class="menu"><a href="admin.php">Админка</a></div>';
-
 ?>
+    <div class="phdr">
+        <?= $lng_dl['create_section'] ?>
+    </div>
+
+    <?php if(isset($_POST['submit'])): ?>
+        <?php
+        $section = new DownSection();
+        $save_dir = $section->add(
+            array(
+                'NAME' => $_POST['name'],
+                'FS_NAME' => $_POST['fs_name'],
+                'DESCRIPTION' => $_POST['description'],
+                'FILES_TYPES' => $_POST['file_types'],
+                'USER_UPLOAD' => $_POST['user_add'],
+                'PARENT_SECTION_ID' => $cat
+            )
+        );
+        ?>
+
+        <?php if(!$save_dir): ?>
+            <div class="rmenu">
+                <p>
+                    <b><?= $lng['error'] ?></b><br>
+                    <?php foreach($section->last_error as $error): ?>
+                        <?= $error ?><br>
+                    <?php endforeach; ?>
+                    <a href="/download/admin.php?act=createdir&amp;cat=<?= $cat ?>"><?= $lng_dl['repeat'] ?></a>
+                </p>
+            </div>
+        <?php else: ?>
+            <div class="gmenu">
+                <?= $lng_dl['section_created_success'] ?>
+            </div>
+        <?php endif; ?>
+
+    <?php else: ?>
+
+        <form action="/download/admin.php?act=createdir&amp;cat=<?= $cat ?>" method="post">
+            <div class="gmenu">
+                <div class="form-group">
+                    <label for="name" class="label"><?= $lng_dl['name'] ?></label><br>
+                    <input type="text" name="name" id="name" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="fs_name" class="label"><?= $lng_dl['name_in_file_system'] ?></label><br>
+                    <input type="text" name="fs_name" id="fs_name" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="label"><?= $lng_dl['description'] ?></label><br>
+                    <input type="text" name="description" id="description" value=""/>
+                </div>
+                <div class="form-group">
+                    <label for="file_types" class="label"><?= $lng_dl['file_types'] ?></label><br>
+                    <input type="text" name="file_types" id="file_types" value=""/><br>
+                    <small><?= $lng_dl['file_types_notice'] ?></small>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="user_add" name="user_add" value="1"/>
+                    <label for="user_add" class="label"><?= $lng_dl['allow_user_add_files'] ?></label>
+                </div>
+                <div class="form-group">
+                    <input type='submit' name='submit' value='<?= $lng['save'] ?>'/>
+                </div>
+            </div>
+        </form>
+    <?php endif; ?>
+    <p>
+        <a href="/download/admin.php?act=folder"><?= $lng_dl['structure_manage'] ?></a><br>
+        <a href="/download/admin.php"><?= $lng_dl['admin_panel'] ?></a>
+    </p>

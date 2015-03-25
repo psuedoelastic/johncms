@@ -1,5 +1,4 @@
-<?php
-
+<?php defined('_IN_JOHNCMS') or die('Restricted access');
 /**
  * @package     JohnCMS
  * @link        http://johncms.com

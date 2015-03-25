@@ -1,41 +1,27 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
-/////////////////////////////////
-/////// Чистильщик кэша /////////
-/////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
-$op = $_GET['op'];
-echo'<div class="phdr">Очистка кэша ';
-if($op == 'screen'){ 
-    echo 'скриншотов';
-    $path = 'graftemp/';
-    }else{
-    echo 'счётчиков';
-    $path = 'cache/';
-    }
-echo '</div>';
-$dir = scandir($path);
-// Смотрим папку
-$ii = count($dir);
-// Считаем элементы
-for($i = 3; $i<$ii; $i++){
-if (is_file($path . $dir[$i]))
-unlink($path . $dir[$i]);
-// Перебираем и удаляем если файл.
-}
-
-$i = $i-3;
-echo'<div class="gmenu">Удалено: '.$i.' файл(ов)</div>';
-echo'<div class="menu"><a href="admin.php">Админка</a></div>';
-
-
-
+$operation = !empty($_GET['op']) ? $_GET['op'] : '';
+$cache_name = ($operation == 'count') ? $lng_dl['clean_cache_counters'] : $lng_dl['clean_cache_screens'];
+$count_files = DownUtil::clearCache($operation);
 ?>
+
+<div class="phdr">
+    <?= $cache_name ?>
+</div>
+<div class="gmenu">
+    <?= $lng_dl['deleted'] ?>: <?= $count_files ?>
+</div>
+<div class="menu">
+    <a href="/download/admin.php"><?= $lng_dl['admin_panel'] ?></a>
+</div>
