@@ -517,7 +517,7 @@ if ($rights == 4 || $rights >= 9)
 
             <div class="bmenu"><?= $cherr ?>
                 <div class="red">
-                    <?
+                    <?php
                     if (!extension_loaded('ffmpeg'))
                     {
                         echo 'Модуль php-ffmpeg не установлен на сервере! Отключите авоматическое создание скриншотов к
@@ -541,7 +541,7 @@ if ($rights == 4 || $rights >= 9)
                     ?>
                 </div>
             </div>
-            <?
+            <?php
             break;
     }
 } else

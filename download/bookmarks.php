@@ -81,7 +81,7 @@ switch($dejst){
                 <a href="/download/"><?= $lng['back'] ?></a>
             </p>
         </div>
-        <?
+        <?php
     }
     break;
     }

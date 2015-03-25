@@ -79,12 +79,14 @@ else
             <?php endif; ?>
         </div>
         <div class="gmenu">
-            <?= functions::image('new.png') ?><a href="index.php?act=new"><?= $lng_dl['last_100_files'] ?></a><br>
-            <?= functions::image('new_dir.gif') ?><a href="top.php"><?= $lng_dl['top_files'] ?></a><br>
-            <?= functions::image('peopl.png') ?><a href="top_users.php"><?= $lng_dl['user_rating'] ?></a>
+            <p>
+                <?= functions::image('new.png') ?><a href="index.php?act=new"><?= $lng_dl['last_100_files'] ?></a><br>
+                <?= functions::image('rate.gif') ?><a href="top_users.php"><?= $lng_dl['user_rating'] ?></a><br>
+                <?= functions::image('rate.gif') ?><a href="top.php"><?= $lng_dl['top_files'] ?></a>
+            </p>
         </div>
 
-        <?
+        <?php
     } else
     {
         echo '<div class="phdr"><a href="index.html">' . $lng_dl['downloads'] . '</a> | ';
@@ -232,7 +234,7 @@ else
                     <?= $lng['list_empty'] ?>
                 </p>
             </div>
-            <?
+            <?php
         }
 
         echo '<div class="phdr">' . $lng_dl['all_files'] . ': ' . $totalfile . '</div>';
@@ -274,7 +276,7 @@ else
         </p>
     <?php endif; ?>
 
-    <?
+    <?php
 }
 require_once '../incfiles/end.php';
 
