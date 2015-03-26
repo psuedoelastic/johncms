@@ -1,16 +1,16 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
-/////////////////////////////////
-/////// Чистильщик кэша /////////
-/////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
+
 
 $viewf = intval($_GET['view']);
 $file = mysql_query("SELECT * FROM `downfiles` WHERE `id` = '" . $viewf . "'");
@@ -19,7 +19,7 @@ if (mysql_num_rows($file) != 0)
 {
 $file = mysql_fetch_array($file);
 $dopway = str_replace(basename($file['way']), '', $file['way']);
-$textl = 'Скачать ' . $file['name'] . ' бесплатно!';
+$textl = $file['name'];
 
 if (!$file['size'])
 {
@@ -42,15 +42,15 @@ $nadir = $dnew1[refid];
 $tf = pathinfo($file['way'], PATHINFO_EXTENSION);
 
 $namee = explode('||||', $file['name']);
-echo '<div class="phdr"><a href="admin.php?act=folder">Корень</a> ' . $pat . $namee[0] . ' [' . size_convert($siz) . ']</div>';
+echo '<div class="phdr"><a href="admin.php?act=folder">'.$lng_dl['base_dir'].'</a> ' . $pat . $namee[0] . ' [' . size_convert($siz) . ']</div>';
 
 $gol = explode('|', $file['gol']);
-    echo '<div class="menu">Рейтинг: ' . $rating = $file['rating'] ? $file['rating'] : '0';
-    echo '&nbsp;Оценок: ' . $gol1 = $file['rating'] ? count($gol) : '0';
+    echo '<div class="menu">'.$lng_dl['rating'].': ' . $rating = $file['rating'] ? $file['rating'] : '0';
+    echo '&nbsp;'.$lng_dl['marks'].': ' . $gol1 = $file['rating'] ? count($gol) : '0';
     echo '<br/>';
     echo rat_star($file['rating']) . '</div>';
 
-echo '<div class="menu"><b>Тип файла:</b> ' . $tf . '</div>';
+echo '<div class="menu"><b>'.$lng_dl['file_type'].':</b> ' . $tf . '</div>';
 
 //// Обработка скрина если таковой имеется////////////
 $scr = mysql_result(mysql_query("SELECT COUNT(*) FROM `downscreen` WHERE `fileid` = '" . $viewf . "'"), 0);
@@ -62,7 +62,7 @@ while ($screen1 = mysql_fetch_array($screen)) {
 if ($i == 1) {
 if ($down_setting['screenshot'])
 echo '<img src="graftemp/' . $screen1[way] . '" alt="Скриншот..."/><br/>';
-echo 'Скриншот: ';
+echo $lng_dl['screen'].': ';
 }
 
             if (!is_file('graftemp/' . $screen1[way])) {
@@ -80,25 +80,25 @@ echo 'Скриншот: ';
         echo '<br/>';
         echo '</div>';
     }
-                echo '<div class="menu"><b>Добавлен:</b> ' . $filtime . '</div>';
+                echo '<div class="menu"><b>'.$lng_dl['added'].':</b> ' . $filtime . '</div>';
                 if ($file['login']) {
-                    echo '<div class="menu"><b>Добавил:</b> ' . $file['login'] . '</div>';
+                    echo '<div class="menu"><b>'.$lng_dl['creator'].':</b> ' . $file['login'] . '</div>';
                 }
 
-    echo '<div class="menu"><b>Скачан:</b> ' . $file['count'] . ' раз</div>';
+    echo '<div class="menu"><b>'.$lng_dl['loads_count'].':</b> ' . $file['count'] . '</div>';
     echo '<div class="menu">';
     if ($file['desc']) {
         echo functions::checkout($file['desc'], 1, 1);
     } else {
-        echo 'Описания нет!';
+        echo $lng_dl['description_is_empty'];
     }
     echo '</div>';
 
-echo '<div class="menu"><img src="img/save.png" alt="."/> <a href="loadfile.php?down=' . $file['way'] . '">Скачать основной файл</a> [' . $file['count'] . ']</div>';
+echo '<div class="menu"><img src="img/save.png" alt="."/> <a href="loadfile.php?down=' . $file['way'] . '">'.$lng_dl['download'].' '.$lng_dl['primary_file'].'</a> [' . $file['count'] . ']</div>';
 if ($rights >= 9) {
 if ($tf == 'zip'){
 echo '<div class="menu"><img src="img/rar.png" alt="."/> <a href="admin.php?act=zip&amp;file='. $file[way] .'&amp;file_id=' . $viewf .
-'">Открыть архив</a></div>';
+'">'.$lng_dl['view_zip'].'</a></div>';
 }
 }
 
@@ -108,38 +108,38 @@ while ($file22 = mysql_fetch_array($file2)) {
 $tf = pathinfo($file22['way'], PATHINFO_EXTENSION);
 
 echo '<div class="menu"><img src="img/save.png" alt="."/> <a href="loadfile.php?down=' .
-$file22['way'] . '">Скачать ' . $file22['name'] . '</a> [' . $file22['count'] .
+$file22['way'] . '">'.$lng_dl['download'].' ' . $file22['name'] . '</a> [' . $file22['count'] .
 ']</div>';
 
 if ($rights >= 9) {
 
 if ($tf == 'zip') {
 echo '<div class="menu"><img src="img/rar.png" alt="."/> <a href="admin.php?act=zip&amp;file='.$file22[way].'&amp;file_id=' . $viewf .
-'">Открыть архив</a></div>';
+'">'.$lng_dl['view_zip'].'</a></div>';
 }
 }
-echo '<div class="menu">[<a href="admin.php?act=delete&amp;op=file&amp;id=' . $file22['id'] . '">Уд.</a>]
-[<a href="admin.php?act=edit&amp;file=' . $file22['id'] . '">Изм.</a>]</div>';
+echo '<div class="menu">[<a href="admin.php?act=delete&amp;op=file&amp;id=' . $file22['id'] . '">'.$lng_dl['delete_file'].'</a>]
+[<a href="admin.php?act=edit&amp;file=' . $file22['id'] . '">'.$lng_dl['edit_file'].'</a>]</div>';
 }
 }
 
 
 
 
-echo '<div class="phdr"><a href="admin.php?act=folder&amp;cat=' . $file['pathid'] . '">Назад</a></div><div class="func">';      
+echo '<div class="phdr"><a href="admin.php?act=folder&amp;cat=' . $file['pathid'] . '">'.$lng['back'].'</a></div><div class="func">';
 if ($file['themeid'] <= 0)
-echo '<a href="admin.php?act=createtheme&amp;fid=' . $viewf . '">Создать тему для обсуждения</a><br/>';
+echo '<a href="admin.php?act=createtheme&amp;fid=' . $viewf . '">'.$lng_dl['create_forum_theme'].'</a><br/>';
 else
-echo '<a href="admin.php?act=delete&amp;op=theme&amp;id=' . $viewf . '">Удалить тему для обсуждения</a><br/>';
+echo '<a href="admin.php?act=delete&amp;op=theme&amp;id=' . $viewf . '">'.$lng_dl['delete_theme'].'</a><br/>';
 
-echo '<a href="admin.php?act=upscreen&amp;file=' . $viewf . '">Выгрузить скриншот</a><br/>
-<a href="admin.php?act=upload&amp;cat=' . $file['pathid'] . '&amp;file=' . $viewf . '">Выгрузить доп. файл</a><br/>
-<a href="admin.php?act=import&amp;cat=' . $file['pathid'] . '&amp;file=' . $viewf . '">Имп. доп. файл</a></div>';
+echo '<a href="admin.php?act=upscreen&amp;file=' . $viewf . '">'.$lng_dl['upload_screen'].'</a><br/>
+<a href="admin.php?act=upload&amp;cat=' . $file['pathid'] . '&amp;file=' . $viewf . '">'.$lng_dl['upload_additional_file'].'</a><br/>
+<a href="admin.php?act=import&amp;cat=' . $file['pathid'] . '&amp;file=' . $viewf . '">'.$lng_dl['import_additional_file'].'</a></div>';
 
 } else
-echo '<div class="rmenu">А нет такого файла!</div>';
+echo '<div class="rmenu">'.$lng_dl['file_not_found'].'</div>';
 
 
-echo'<div class="menu"><a href="admin.php">Админка</a></div>';
+echo'<div class="menu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
 
 ?>
