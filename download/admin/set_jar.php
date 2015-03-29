@@ -1,20 +1,19 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
-/////////////////////////////////////
-////// Настройки полей ввода ////////
-/////////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
 if ($rights >= 9)
 {
-    echo'<div class="phdr">Настройки для JAVA</div>';
+    echo'<div class="phdr">'.$lng_dl['setting_for_java'].'</div>';
     if (isset($_POST['submit']))
     {
         $down_jar = array();
@@ -31,14 +30,14 @@ if ($rights >= 9)
         {
             fwrite($arr, serialize($down_jar));
             fclose($arr);
-                echo'<div class="gmenu">Настройки успешно сохранены!</div>';
+                echo'<div class="gmenu">'.$lng_dl['saved'].'</div>';
         }
         else
         {
-            echo'<div class="rmenu">Не удалось открыть файл настроек! Проверьте права доступа!</div>';
+            echo'<div class="rmenu">'.$lng_dl['setting_not_saved'].'</div>';
         }
 
-        echo'<div class="menu"><a href="admin.php?act=set_jar">Настройки для JAVA</a></div><div class="menu"><a href="admin.php">Админка</a></div>';
+        echo'<div class="menu"><a href="admin.php?act=set_jar">'.$lng_dl['setting_for_java'].'</a></div><div class="menu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
 
     }
     else
@@ -46,34 +45,35 @@ if ($rights >= 9)
         $down_jar = file_get_contents('set.dat');
         $down_jar = unserialize($down_jar);
         echo '<form action="admin.php?act=set_jar" method="post">';
-        echo'<div class="menu">Автоматическая генерация JAD к JAR:<br/>Вкл.';
+        echo'<div class="menu">'.$lng_dl['auto_generate_jad'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_jar['jadgen'], 'jad');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo'Версия приложения при просмотре:<br/>Вкл.';
+        echo $lng_dl['version'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_jar['jar_version'], 'jar_version');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo'Название (из манифеста) при просмотре:<br/>Вкл.';
+        echo $lng_dl['name'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_jar['jar_name'], 'jar_name');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo'Производитель (из манифеста) при просмотре:<br/>Вкл.';
+        echo $lng_dl['vendor'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_jar['jar_vendor'], 'jar_vendor');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo'MIDP профиль(из манифеста) при просмотре:<br/>Вкл.';
+        echo $lng_dl['profile'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_jar['jar_profile'], 'jar_profile');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo'Url(из манифеста) при просмотре:<br/>Вкл.';
+        echo $lng_dl['site_url'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_jar['jar_url'], 'jar_url');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo '<input type="submit" name="submit" value="Сохранить"/></div>
+        echo '<input type="submit" name="submit" value="'.$lng['save'].'"/></div>
         </form>';
-        echo'<div class="gmenu"><a href="admin.php">Админка</a></div>';
+        echo'<div class="gmenu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
     }
 }else
-    echo'Вы не имеете необходимых прав для доступа к данному разделу!';
-?>
+{
+    echo $lng_dl['access_denied'];
+}

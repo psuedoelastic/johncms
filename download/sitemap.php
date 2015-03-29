@@ -1,20 +1,22 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+<?php define('_IN_JOHNCMS', 1);
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng_dl
+ * @var $lng
+ */
 
-define('_IN_JOHNCMS', 1);
 $headmod = 'load';
 require_once '../incfiles/core.php';
 require_once 'functions.php';
-$textl = 'Загруз-Центр! Админка';
+$textl = $lng_dl['downloads'].' / '.$lng_dl['create_sitemap'];
 require_once '../incfiles/head.php';
-echo'<div class="phdr">Карта загрузок</div>';
+echo'<div class="phdr">'.$lng_dl['create_sitemap'].'</div>';
 if ($rights == 4 || $rights >= 6) {
     $i = 0;
     $sitemap = 0;
@@ -51,16 +53,14 @@ if ($rights == 4 || $rights >= 6) {
     fwrite($file, $sitem);
     fclose($file);
 
-    echo '<div class="gmenu">Карта загрузок успешно создана!</div>';
-    echo '<div class="gmenu">Добавлено ссылок в карту: ' . $i . '</div>';
+    echo '<div class="gmenu">'.$lng_dl['saved'].'</div>';
+    echo '<div class="gmenu">'.$lng_dl['sitemap_added'].': ' . $i . '</div>';
     if ($count_sitemap > 0) {
         $count_sitemap++;
-        echo '<div class="gmenu">Карта содержит более 50 тысяч ссылок, по этому она была разбита на ' .
-            $count_sitemap . ' файла(ов).</div>';
+        echo '<div class="gmenu">'.str_replace('#FILE_COUNT#', $count_sitemap, $lng_dl['sitemap_cutted']).'</div>';
     }
-    echo '<div class="menu"><a href="admin.php">Админка</a></div>';
+    echo '<div class="menu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
 } else {
-    echo '<div class="rmenu">В доступе отказано!</div>';
+    echo '<div class="rmenu">'.$lng_dl['access_denied'].'</div>';
 }
 require_once ('../incfiles/end.php');
-?>

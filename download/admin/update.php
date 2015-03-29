@@ -1,19 +1,18 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
-///////////////////////////////////
-// Проверка существования файлов //
-///////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
     $cat = intval($_GET['cat']); // Каталог который надо проверить
-   echo'<div class="phdr">Очистка базы от несуществующего</div>';
+   echo'<div class="phdr">'.$lng_dl['clean_base'].'</div>';
    $zap = mysql_query("SELECT * FROM `downpath` WHERE `refid` = '" . $cat . "'");
    $counp = 0;
    $counf = 0;
@@ -41,20 +40,18 @@ defined('_IN_JOHNCMS') or die('Error: restricted access');
     }
     if($_GET['ver'])
     {
-        echo '<div class="gmenu">Удалено файлов: '.$counf.'</div>';
-        echo '<div class="gmenu">Удалено папок: '.$counp.'</div>';
+        echo '<div class="gmenu">'.$lng_dl['deleted_files'].': '.$counf.'</div>';
+        echo '<div class="gmenu">'.$lng_dl['deleted_sections'].': '.$counp.'</div>';
         auto_clean_cache(); // Чистим кэш счётчиков
     }
     else
     {
-        echo '<div class="gmenu">Не найдено файлов: '.$counf.'</div>';
-        echo '<div class="gmenu">Не найдено папок: '.$counp.'</div>';
+        echo '<div class="gmenu">'.$lng_dl['not_found_files'].': '.$counf.'</div>';
+        echo '<div class="gmenu">'.$lng_dl['not_found_sections'].': '.$counp.'</div>';
         if($counf+$counp > 0)
         {
-            echo'<div class="menu">Подтвердить удаление файлов/папок из базы?</div>';
-            echo '<div class="gmenu"><a href="admin.php?act=update&amp;cat='.$cat.'&amp;ver=1">Да</a> | <a href="admin.php">Нет</a></div>';
+            echo'<div class="menu">'.$lng_dl['really_delete'].'</div>';
+            echo '<div class="gmenu"><a href="admin.php?act=update&amp;cat='.$cat.'&amp;ver=1">'.$lng_dl['yes_delete'].'</a> | <a href="admin.php">'.$lng_dl['not_delete'].'</a></div>';
         }
     }
-    echo '<div class="gmenu"><a href="admin.php">Админка</a></div>';
-
-?>
+    echo '<div class="gmenu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';

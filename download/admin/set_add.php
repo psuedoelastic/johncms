@@ -1,20 +1,19 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
-/////////////////////////////////////
-////// Настройки полей ввода ////////
-/////////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
 if ($rights >= 9)
 {
-    echo'<div class="phdr">Настройки полей ввода</div>';
+    echo'<div class="phdr">'.$lng_dl['fields_setting'].'</div>';
     if (isset($_POST['submit']))
     {
         $down_add = array();
@@ -29,14 +28,14 @@ if ($rights >= 9)
         {
             fwrite($arr, serialize($down_add));
             fclose($arr);
-                echo'<div class="gmenu">Настройки успешно сохранены!</div>';
+                echo'<div class="gmenu">'.$lng_dl['saved'].'</div>';
         }
         else
         {
-            echo'<div class="rmenu">Не удалось открыть файл настроек! Проверьте права доступа!</div>';
+            echo'<div class="rmenu">'.$lng_dl['setting_not_saved'].'</div>';
         }
 
-        echo'<div class="menu"><a href="admin.php?act=set_add">Настройки полей ввода</a></div><div class="menu"><a href="admin.php">Админка</a></div>';
+        echo'<div class="menu"><a href="admin.php?act=set_add">'.$lng_dl['fields_setting'].'</a></div><div class="menu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
 
     }
     else
@@ -44,56 +43,57 @@ if ($rights >= 9)
         $down_add = file_get_contents('set_add.dat');
         $down_add = unserialize($down_add);
         echo '<form action="admin.php?act=set_add" method="post">
-        <div class="rmenu">Имена полей вводятся через запятую! Обязательные поля будут в любом случае.</div>
-        <div class="rmenu">Список имён полей ввода:<br/>
-        <b>urlscreen</b> - URL скриншота для импорта.<br/>
-        <b>ftpname</b> - Имя для сохранения на FTP.<br/>
-        <b>namelink</b> - Имя для ссылки "скачать" в описании файла.<br/>
-        <b>desc</b> - Описание файла.<br/>
-        <b>lang</b> - Язык интерфейса.<br/>
-        <b>autor</b> - Автор.<br/>
-        <b>vendor</b> - Производитель.<br/>
-        <b>compatibility</b> - Совместимость.<br/>
-        <b>distributed</b> - Распространяется (бесплатно, crack и т.п.).<br/>
-        <b>url</b> - Адрес сайта.<br/>
-        <b>ver</b> - Версия.<br/>
-        <b>year</b> - Год выхода.<br/>
+        <div class="rmenu">'.$lng_dl['fields_setting_warn'].'</div>
+        <div class="rmenu">'.$lng_dl['fields_setting_list'].':<br/>
+        <b>urlscreen</b> - '.$lng_dl['screen_url'].'.<br/>
+        <b>ftpname</b> - '.$lng_dl['name_in_file_system'].'.<br/>
+        <b>namelink</b> - '.$lng_dl['link_name'].'<br/>
+        <b>desc</b> - '.$lng_dl['description'].'<br/>
+        <b>lang</b> - '.$lng_dl['interface_language'].'<br/>
+        <b>autor</b> - '.$lng_dl['author'].'<br/>
+        <b>vendor</b> - '.$lng_dl['vendor'].'<br/>
+        <b>compatibility</b> - '.$lng_dl['compatibility'].'<br/>
+        <b>distributed</b> - '.$lng_dl['propagation_conditions'].'<br/>
+        <b>url</b> - '.$lng_dl['site_url'].'<br/>
+        <b>ver</b> - '.$lng_dl['version'].'<br/>
+        <b>year</b> - '.$lng_dl['released'].'<br/>
         </div>
         <div class="menu">
-        Поля для картинок:<br/>
+        '.$lng_dl['fields_for_image'].':<br/>
         <input type="text" name="images" value="'.$down_add['images'].'"/>
         </div>
 
         <div class="menu">
-        Поля для видео:<br/>
+        '.$lng_dl['fields_for_videos'].':<br/>
         <input type="text" name="videos" value="'.$down_add['videos'].'"/>
         </div>
 
         <div class="menu">
-        Поля для музыки:<br/>
+        '.$lng_dl['fields_for_music'].':<br/>
         <input type="text" name="music" value="'.$down_add['music'].'"/>
         </div>
 
         <div class="menu">
-        Поля для приложений/игр:<br/>
+        '.$lng_dl['fields_for_soft'].':<br/>
         <input type="text" name="applications" value="'.$down_add['applications'].'"/>
         </div>
 
         <div class="menu">
-        Поля для скриптов:<br/>
+        '.$lng_dl['fields_for_scripts'].':<br/>
         <input type="text" name="scripts" value="'.$down_add['scripts'].'"/>
         </div>
 
         <div class="menu">
-        Поля для прочего:<br/>
+        '.$lng_dl['fields_for_other'].':<br/>
         <input type="text" name="others" value="'.$down_add['others'].'"/>
         </div>
 
         <div class="menu">
-        <input type="submit" name="submit" value="Сохранить"/></div>
+        <input type="submit" name="submit" value="'.$lng['save'].'"/></div>
         </form>';
-        echo'<div class="gmenu"><a href="admin.php">Админка</a></div>';
+        echo'<div class="gmenu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
     }
 }else
-    echo'Вы не имеете необходимых прав для доступа к данному разделу!';
-?>
+{
+    echo $lng_dl['access_denied'];
+}

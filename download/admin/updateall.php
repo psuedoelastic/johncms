@@ -1,18 +1,18 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
-/////////////////////////////////
-/////// Обновление базы /////////
-/////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
 $cat = intval($_GET['cat']);
-echo'<div class="phdr">Полное обновление базы</div>';
+echo'<div class="phdr">'.$lng_dl['full_base_refresh'].'</div>';
 function updateall($cat){
     global $screenroot, $login;
     $countp = 0;
@@ -106,8 +106,7 @@ function updateall($cat){
     }
     updateall($cat);
     auto_clean_cache(); // Чистим кэш счётчиков
-    echo'<div class="gmenu">Успешно обновлено!</div>';
+    echo'<div class="gmenu">'.$lng_dl['refresh_success'].'</div>';
 
-    echo'<a href="admin.php?act=folder&amp;cat='.$cat.'">Назад в папку</a><br/>';
-    echo'<a href="admin.php">Админка</a><br/>';
-?>
+    echo'<a href="admin.php?act=folder&amp;cat='.$cat.'">'.$lng_dl['to_section'].'</a><br/>';
+    echo'<a href="admin.php">'.$lng_dl['admin_panel'].'</a><br/>';

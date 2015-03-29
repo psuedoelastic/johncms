@@ -1,20 +1,19 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
-/////////////////////////////////////
-////// Настройки полей ввода ////////
-/////////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
 if ($rights >= 9)
 {
-    echo'<div class="phdr">Настройки скриншотов</div>';
+    echo'<div class="phdr">'.$lng_dl['screens_setting'].'</div>';
     if (isset($_POST['submit']))
     {
         $down_scr = array();
@@ -39,14 +38,14 @@ if ($rights >= 9)
         {
             fwrite($arr, serialize($down_scr));
             fclose($arr);
-                echo'<div class="gmenu">Настройки успешно сохранены!</div>';
+                echo'<div class="gmenu">'.$lng_dl['saved'].'</div>';
         }
         else
         {
-            echo'<div class="rmenu">Не удалось открыть файл настроек! Проверьте права доступа!</div>';
+            echo'<div class="rmenu">'.$lng_dl['setting_not_saved'].'</div>';
         }
 
-        echo'<div class="menu"><a href="admin.php?act=set_screens">Настройки скриншотов</a></div><div class="menu"><a href="admin.php">Админка</a></div>';
+        echo'<div class="menu"><a href="admin.php?act=set_screens">'.$lng_dl['screens_setting'].'</a></div><div class="menu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
 
     }
     else
@@ -55,70 +54,71 @@ if ($rights >= 9)
         $down_scr = unserialize($down_scr);
         echo '<form action="admin.php?act=set_screens" method="post">';
 
-        echo '<div class="menu">Нанесение копирайта при скачивании картинки:<br/>Вкл.';
+        echo '<div class="menu">'.$lng_dl['image_copyright'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['scr_load_img'], 'scr_load_img');
-        echo 'Выкл.</div>';
+        echo $lng_dl['set_off'].'.</div>';
 
-        echo '<div class="menu">Нанесение копирайта на скриншоты:<br/>Вкл.';
+        echo '<div class="menu">'.$lng_dl['screen_copyright'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['scr_copy'], 'scr_copy');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo 'Позиция копирайта:<br/>Левый верхний угол.';
+        echo ''.$lng_dl['position_copyright'].':<br/>'.$lng_dl['left_top'].'.';
         radio_check($down_scr['copy_position'], 'copy_position');
-        echo 'Правый нижний угол.</div><div class="menu">';
+        echo ''.$lng_dl['right_bottom'].'.</div><div class="menu">';
 
-        echo 'Кэширование скриншотов:<br/>Вкл.';
+        echo ''.$lng_dl['screen_caching'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['screencache'], 'screencache');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo 'Просмотр скриншотов в описании:<br/>Вкл.';
+        echo ''.$lng_dl['screen_in_description'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['screenshot'], 'screenshot');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo 'Скрины к темам в списке файлов:<br/>Вкл.';
+        echo ''.$lng_dl['screen_in_list'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['screenlist'], 'screenlist');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo 'Скрины к темам при просмотре 1 файла:<br/>Вкл.';
+        echo ''.$lng_dl['screen_for_theme_detail'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['screenview'], 'screenview');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
         if (!extension_loaded('ffmpeg'))
-        echo'<b><span class="red">Необходимо выключить!</span></b><br/>';
-        echo 'Скрин при просмотре 1 видео:<br/>Вкл.';
+        echo'<b><span class="red">'.$lng_dl['must_be_off'].'</span></b><br/>';
+        echo ''.$lng_dl['screen_for_video_detail'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['screenvideo'], 'screenvideo');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
         if (!extension_loaded('ffmpeg'))
-        echo'<b><span class="red">Необходимо выключить!</span></b><br/>';
-        echo 'Скрин в списке видео файлов:<br/>Вкл.';
+        echo'<b><span class="red">'.$lng_dl['must_be_off'].'</span></b><br/>';
+        echo ''.$lng_dl['screen_in_list_video'].':<br/>'.$lng_dl['set_on'].'.';
         radio_check($down_scr['scrlistvideo'], 'scrlistvideo');
-        echo 'Выкл.</div><div class="menu">';
+        echo $lng_dl['set_off'].'.</div><div class="menu">';
 
-        echo 'Размер скриншота:<br/>
+        echo ''.$lng_dl['screen_size'].':<br/>
         <input type="number" name="scr_size" value="'.$down_scr['scr_size'].'"/> px.<br/>
-        <small>Скриншот будет сжиматься пропорционально. 0 - Выключить сжатие</small></div>
+        <small>'.$lng_dl['screen_size_msg'].'</small></div>
         <div class="menu">';
 
-        echo 'Размер скриншота в списке файлов:<br/>
+        echo ''.$lng_dl['screen_size_in_list'].':<br/>
         <input type="number" name="scr_size_list" value="'.$down_scr['scr_size_list'].'"/> px.<br/>
-        <small>Скриншот будет сжиматься пропорционально. 0 - Выключить сжатие</small></div>
+        <small>'.$lng_dl['screen_size_msg'].'</small></div>
         <div class="menu">';
 
-        echo 'Размер копирайта при просмотре одного файла:<br/>
+        echo ''.$lng_dl['copyright_size_detail'].':<br/>
         <input type="number" name="scr_copy_size" value="'.$down_scr['scr_copy_size'].'"/></div>
         <div class="menu">';
 
-        echo 'Размер копирайта в списке файлов:<br/>
+        echo ''.$lng_dl['copyright_size_list'].':<br/>
         <input type="number" name="scr_copy_listsize" value="'.$down_scr['scr_copy_listsize'].'"/></div>
         <div class="menu">';
 
-        echo 'Текст копирайта:<br/>
+        echo ''.$lng_dl['copyright_text'].':<br/>
         <input type="text" name="scr_copy_text" value="'.$down_scr['scr_copy_text'].'"/></div>
         <div class="menu">';
 
-        echo '<input type="submit" name="submit" value="Сохранить"/></div>
+        echo '<input type="submit" name="submit" value="'.$lng['save'].'"/></div>
         </form>';
-        echo'<div class="gmenu"><a href="admin.php">Админка</a></div>';
+        echo'<div class="gmenu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';
     }
 }else
-    echo'Вы не имеете необходимых прав для доступа к данному разделу!';
-?>
+{
+    echo $lng_dl['access_denied'];
+}

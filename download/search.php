@@ -6,16 +6,22 @@
  * @license     LICENSE.txt (see attached file)
  * @version     VERSION.txt (see attached file)
  * @author      http://johncms.com/about
+ *
+ * @var $lng_dl
+ * @var $lng
  */
 
 
 define('_IN_JOHNCMS', 1);
-$textl = 'Загруз-Центр / Поиск файлов';
+
 $headmod = 'downsearch';
 require_once '../incfiles/core.php';
-require_once '../incfiles/head.php';
 require_once 'functions.php';
-echo '<div class="phdr"><b>Поиск файлов</b></div>';
+
+$textl = $lng_dl['downloads'].' / '.$lng_dl['search_files'];
+require_once '../incfiles/head.php';
+
+echo '<div class="phdr"><b>'.$lng_dl['search_files'].'</b></div>';
 if (isset($_POST['submit']) || isset($_GET['submit']))
 {
     $search = isset ($_POST['search']) ? trim($_POST['query']) : '';
@@ -53,36 +59,36 @@ if (isset($_POST['submit']) || isset($_GET['submit']))
             echo f_preview($mass, $set_view, $tf);
             echo '</div>';
         }
-        echo '<div class="phdr">Найдено: ' . $total . '</div>';
+        echo '<div class="phdr">'.$lng_dl['found'].': ' . $total . '</div>';
         if ($total > $kmess)
         {
             echo '<div class="menu">' . functions::display_pagination('search.php?search=' . $type . '&amp;query=' . $search . '&amp;submit=1&amp;', $start, $total, $kmess) . '</div>';
-            echo '<div class="menu"><form action="search.php" method="get"><input type="hidden" name="search" value="' . $type . '"/><input type="hidden" name="query" value="' . $search . '"/><input type="hidden" name="submit" value="1"/><input type="text" name="page" size="2"/><input type="submit" value="К странице &gt;&gt;"/></form></div>';
+            echo '<div class="menu"><form action="search.php" method="get"><input type="hidden" name="search" value="' . $type . '"/><input type="hidden" name="query" value="' . $search . '"/><input type="hidden" name="submit" value="1"/><input type="text" name="page" size="2"/><input type="submit" value="'.$lng_dl['to_page'].' &gt;&gt;"/></form></div>';
         }
-        echo '<div class="menu"><a href="search.php">Новый поиск</a><br/>';
-        echo '<a href="index.html">В загруз-центр</a></div>';
+        echo '<div class="menu"><a href="search.php">'.$lng_dl['new_search'].'</a><br/>';
+        echo '<a href="/download/">'.$lng_dl['back_to_downloads'].'</a></div>';
 
     } else
     {
-        echo '<div class="rmenu">Поиск не дал результатов. Попробуйте сформулировать запрос по другому и повторите поиск.<br/>
-    <a href="search.php">Повторить поиск</a></div>';
-        echo '<div class="menu"><a href="index.html">В загруз-центр</a></div>';
+        echo '<div class="rmenu">'.$lng_dl['search_not_results'].'<br/>
+    <a href="search.php">'.$lng_dl['repeat'].'</a></div>';
+        echo '<div class="menu"><a href="/download/">'.$lng_dl['back_to_downloads'].'</a></div>';
     }
 
 } else
 {
     echo '<form action="search.php?" method="post">
-<div class="gmenu">Введите запрос:<br/>
-<input type="text" name="query"/><br/><small>Длинна запроса по описанию не менее 4 букв</small></div>';
+<div class="gmenu">'.$lng_dl['search_text'].':<br/>
+<input type="text" name="query"/><br/><small>'.$lng_dl['search_text_msg'].'</small></div>';
 
-    echo '<div class="menu">Искать по:<br/>';
+    echo '<div class="menu">'.$lng_dl['found_for'].':<br/>';
     echo '<input name="search" type="radio" value="0" checked="checked" />';
-    echo 'Описанию<br/>';
+    echo ''.$lng_dl['search_desc'].'<br/>';
     echo '<input name="search" type="radio" value="1" />';
-    echo 'Названию</div>
-<div class="menu"><input type="submit" name="submit" value="Искать!"/></div>
+    echo ''.$lng_dl['search_name'].'</div>
+<div class="menu"><input type="submit" name="submit" value="'.$lng_dl['search'].'"/></div>
 </form>';
-    echo '<div class="menu"><a href="index.html">В загруз-центр</a></div>';
+    echo '<div class="menu"><a href="/download/">'.$lng_dl['back_to_downloads'].'</a></div>';
 }
 
 

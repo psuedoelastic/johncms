@@ -1,19 +1,19 @@
-<?php
-/*
-Скрипт загруз центра для JohnCMS
-Автор: Максим (simba)
-ICQ: 61590077
-Сайт: http://symbos.su
-R866920725287
-Z117468354234
-*/
+<?php defined('_IN_JOHNCMS') or die('Error: restricted access');
+/**
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ *
+ * @var $lng
+ * @var $lng_dl
+ */
 
-///////////////////////////////////////////
-///////////// Добавление скринов //////////
-///////////////////////////////////////////
-defined('_IN_JOHNCMS') or die('Error: restricted access');
+
 $file = intval($_GET['file']);
-echo '<div class="phdr">Выгрузка скриншота</div>';
+echo '<div class="phdr">'.$lng_dl['upload_screen'].'</div>';
 if (isset($_POST['submit'])) {
     $fname = $_FILES['fail']['name'];
     $impcat = mysql_query("select * from `downfiles` where id = '" . $file . "';");
@@ -22,8 +22,8 @@ if (isset($_POST['submit'])) {
     $scrf = pathinfo($fname, PATHINFO_EXTENSION);
 
     if ($scrf !== "jpg" && $scrf !== "png" && $scrf !== "gif") {
-        echo '<div class=rmenu">К загрузке разрешены только jpg,png и gif скриншоты.<br/><a href="admin.php?act=upscreen&amp;file=' .
-            $file . '">Повторить</a><br/>';
+        echo '<div class=rmenu">'.str_replace('#SCREEN_TYPE#', $scrf, $lng_dl['screen_type_not_allowed']).'<br/>
+<a href="admin.php?act=upscreen&amp;file='.$file.'">'.$lng_dl['repeat'].'</a><br/>';
         require_once ('../incfiles/end.php');
         exit;
     }
@@ -35,27 +35,25 @@ if (isset($_POST['submit'])) {
 
     if ((move_uploaded_file($_FILES["fail"]["tmp_name"], $save)) == true) {
         @chmod($save, 0777);
-        echo '<div class="gmenu">Файл загружен!</div>';
+        echo '<div class="gmenu">'.$lng_dl['file_loaded'].'</div>';
         mysql_query("INSERT INTO `downscreen` SET `fileid` = '" . $file . "', `way` = '" .
             basename($save) . "';");
     } else {
-        echo '<div class="rmenu">Ошибка при загрузке файла</div>';
+        echo '<div class="rmenu">'.$lng_dl['load_error'].'</div>';
     }
 
     echo '<div class="menu"><a href="admin.php?act=file&amp;view=' . $file .
-        '">К файлу</a></div>';
+        '">'.$lng_dl['back_to_file'].'</a></div>';
 
 } else {
 
     echo '<form action="admin.php?act=upscreen&amp;file=' . $file .
         '" method="post" enctype="multipart/form-data">';
-    echo '<div class="menu">Выберите файл:<br/><input type="file" name="fail"/></div>
+    echo '<div class="menu">'.$lng_dl['select_file'].':<br/><input type="file" name="fail"/></div>
    <div class="menu">
-   <input type="submit" name="submit" value="Загрузить"/></div></form>';
+   <input type="submit" name="submit" value="'.$lng['save'].'"/></div></form>';
     echo '<div class="menu"><a href="admin.php?act=file&amp;view=' . $file .
-        '">К файлу</a></div>';
+        '">'.$lng_dl['back_to_file'].'</a></div>';
 }
 
-echo '<div class="menu"><a href="admin.php">Админка</a></div>';
-
-?>
+echo '<div class="menu"><a href="admin.php">'.$lng_dl['admin_panel'].'</a></div>';

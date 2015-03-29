@@ -6,21 +6,25 @@
  * @license     LICENSE.txt (see attached file)
  * @version     VERSION.txt (see attached file)
  * @author      http://johncms.com/about
+ *
+ * @var $lng_dl
+ * @var $lng
  */
 
 define('_IN_JOHNCMS', 1);
 $headmod = 'load';
-$textl = 'Соглашение';
+
 require_once '../incfiles/core.php';
+require_once 'functions.php';
+
+$textl = $lng_dl['agreement'];
 require_once '../incfiles/head.php';
-$id = $_GET['id'];
-echo'<div class="phdr">Соглашение</div>';
-echo '<div class="menu">Все файлы расположенные на данном ресурсе были взяты из открытых источников.
-Любая информация представленная здесь, может использоваться только в ознакомительных целях, после чего вы обязаны ее удалить.
-Ни администрация сайта, ни хостинг-провайдер, ни любые другие лица не могут нести отвественности за использование материалов данного сайта.
-Входя на сайт вы автоматически соглашаетесь с данными условиями.</div>
-<div class="gmenu">Если вы явдяетесь правообладателем какого либо файла и условия распространения Вашего файла
- Вас не устраивают, пожалуйста свяжитесь с нами и мы вместе решим данный вопрос.</div>';
-echo'<div class="phdr"><a href="file_' . $id . '.html">К файлу</a></div>';
+$id = intval($_GET['id']);
+$file_array = DownFile::getById($id);
+
+echo'<div class="phdr">'.$lng_dl['agreement'].'</div>';
+echo $lng_dl['agreement_text'];
+
+echo'<div class="phdr"><a href="'.$file_array['FILE_PAGE_URL'].'">'.$lng_dl['back_to_file'].'</a></div>';
 
 require_once ('../incfiles/end.php');

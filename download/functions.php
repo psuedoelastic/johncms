@@ -19,10 +19,10 @@ $downpat = 'download/files';
 $filesroot = '../download'; /////////// Главная папка со скриптом
 $screenroot = $filesroot . '/screens'; ////////// Папка со скриншотами
 $loadroot = $filesroot . '/files';  /////// Папка с файлами
-require_once 'classes/classImageEdit.php';
-require_once 'classes/classJarInfo.php';
+require_once ROOTPATH.'download/classes/classImageEdit.php';
+require_once ROOTPATH.'download/classes/classJarInfo.php';
 //////////// Получаем основные настройки загруза ////////////
-$file = 'set.dat';
+$file = ROOTPATH.'download/set.dat';
 $down_setting = file_get_contents($file);
 $down_setting = unserialize($down_setting);
 
@@ -47,12 +47,12 @@ function rat_star($rat)
 function auto_clean_cache()
 {
     // Функция очистки кэша счётчиков //    
-    $dir = scandir('cache/');
+    $dir = scandir(ROOTPATH.'download/cache/');
     $ii = count($dir);
     for ($i = 3; $i < $ii; $i++)
     {
-        if (is_file('cache/' . $dir[$i]))
-            unlink('cache/' . $dir[$i]);
+        if (is_file(ROOTPATH.'download/cache/' . $dir[$i]))
+            unlink(ROOTPATH.'download/cache/' . $dir[$i]);
     }
 }
 
@@ -144,7 +144,7 @@ function f_preview($arr = array(), $set_view = array(), $tf = '')
     {
         if ($down_setting['screencache'])
         {
-            $icon = $file_check = 'graftemp/thm_' . $arr['id'] . '.GIF'; //Путь к сохраняемому файлу
+            $icon = $file_check = ROOTPATH.'download/graftemp/thm_' . $arr['id'] . '.GIF'; //Путь к сохраняемому файлу
             $siz_h = 60;
             $siz_w = 75; //Размеры превьюшки
         } else
@@ -152,6 +152,7 @@ function f_preview($arr = array(), $set_view = array(), $tf = '')
             $siz_h = 128;
             $siz_w = 160;
             $file_check = $loadroot . '/' . $arr['way'] . '.GIF';
+            // TODO В какой-то версии потерялся этот файл. Вернуть или убрать вообще.
             $icon = 'prew.php?id=' . $arr['way'] . '.GIF&amp;way=1';
         }
         if (!is_file($file_check))
@@ -169,6 +170,7 @@ function f_preview($arr = array(), $set_view = array(), $tf = '')
             $siz_h = 128;
             $siz_w = 160;
             $file_check = $loadroot . '/' . $arr['way'] . '.GIF';
+            // TODO В какой-то версии потерялся этот файл. Вернуть или убрать вообще.
             $icon = 'prew.php?id=' . $arr['way'] . '.GIF&amp;way=1';
         }
         if (!is_file($file_check))
@@ -189,6 +191,7 @@ function f_preview($arr = array(), $set_view = array(), $tf = '')
             $siz_h = 132;
             $siz_w = 96;
             $file_check = $loadroot . '/' . $arr['way'] . '.GIF';
+            // TODO В какой-то версии потерялся этот файл. Вернуть или убрать вообще.
             $icon = 'prew.php?id=' . $arr['way'] . '.GIF&amp;way=1';
         }
         if (!is_file($file_check))
@@ -590,13 +593,13 @@ function name_replace($name)
 
 function dcount_simba()
 {
-    global $rights, $home, $down_setting, $lng_dl;
+    global $rights, $down_setting, $lng_dl;
 
     $cachetime = time() - $down_setting['cachetime'] * 3600; // Время кэширования
-    if ($down_setting['cachetime'] > 0 && is_file('download/cache/all.dat') && filemtime('download/cache/all.dat') > $cachetime)
+    if ($down_setting['cachetime'] > 0 && is_file(ROOTPATH.'download/cache/all.dat') && filemtime(ROOTPATH.'download/cache/all.dat') > $cachetime)
     {
         // Открываем файл кэша если существует и не устарел
-        $out = file_get_contents('download/cache/all.dat');
+        $out = file_get_contents(ROOTPATH.'download/cache/all.dat');
 
     } else
     {
@@ -606,10 +609,10 @@ function dcount_simba()
         $old = time() - ($down_setting['newtime'] * 24 * 3600);
         $countnf = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `time` > '" . $old . "' AND `status` = 1 AND `type` != 1"), 0);
         if ($countnf != 0)
-            $out = $out . '/ <span class="red"><a href="' . $home . '/download/new.html">+' . $countnf . '</a></span>';
+            $out = $out . '/ <span class="red"><a href="/download/new.html">+' . $countnf . '</a></span>';
         if ($down_setting['cachetime'] > 0)
         {
-            $cache_file = fopen('download/cache/all.dat', "w");
+            $cache_file = fopen(ROOTPATH.'download/cache/all.dat', "w");
             fwrite($cache_file, $out);
             fclose($cache_file);
         }
@@ -619,7 +622,7 @@ function dcount_simba()
     {
         $countf = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `type` != 1 AND `status` = 0"), 0);
         if ($countf > 0)
-            $out = $out . '/ <a href="' . $home . '/download/admin.php?act=mod"><font color="#ff0000">'.$lng_dl['moderation'].': ' . $countf . '</font></a>';
+            $out = $out . '/ <a href="/download/admin.php?act=mod"><font color="#ff0000">'.$lng_dl['moderation'].': ' . $countf . '</font></a>';
     }
 
     return $out;
