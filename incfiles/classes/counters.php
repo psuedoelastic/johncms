@@ -53,7 +53,7 @@ class counters
     */
     static function downloads()
     {
-        global $down_setting;
+        global $down_setting, $lng_dl;
         require_once ROOTPATH.'download/functions.php';
         return dcount_simba();
     }

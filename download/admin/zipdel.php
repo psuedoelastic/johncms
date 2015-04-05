@@ -16,7 +16,7 @@ $cat = intval($_GET['cat']);
 if ($_POST['submit'])
 {
     $f = functions::check($_POST['name']);
-    include_once 'classes/pclzip.lib.php';
+    require_once ROOTPATH . 'incfiles/lib/pclzip.lib.php';
     echo '<div class="phdr">'.$lng_dl['mass_file_del'].'</div>';
 
     $delf1 = mysql_fetch_array(mysql_query("SELECT * FROM `downpath` WHERE `id` = '" . $cat . "';"));

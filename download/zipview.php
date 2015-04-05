@@ -20,9 +20,8 @@ require_once '../incfiles/head.php';
 if ($down_setting['zipview'])
 {
 
-    include_once 'classes/pclzip.lib.php';
+    require_once ROOTPATH . 'incfiles/lib/pclzip.lib.php';
     $act = isset($_GET['act']) ? $_GET['act'] : '';
-    $file = functions::check($_GET['file']);
     $file_id = intval($_GET['file_id']);
 
     $file_array = DownFile::getById($file_id);
@@ -39,7 +38,7 @@ if ($down_setting['zipview'])
     {
         //////// Просмотр файла в архиве \\\\\\\\\\\\\
         case 'view':
-            $f = check($_GET['ob']);
+            $f = functions::check($_GET['ob']);
             $type = array('txt', 'dat', 'html', 'htm', 'wml', 'php', 'htaccess'); //// типы файлов для просмотра
             if (in_array(pathinfo($f, PATHINFO_EXTENSION), $type))
             {
@@ -47,18 +46,18 @@ if ($down_setting['zipview'])
                 $siz = round($ext[0]['size'] / 1024, 2);
                 if ($siz > 1024)
                 {
-                    $siz = round($siz / 1024, 2) . ' мб';
+                    $siz = round($siz / 1024, 2) . ' mb';
                 } else
                 {
-                    $siz = $siz . ' кб';
+                    $siz = $siz . ' kb';
                 }
                 $sizc = round($ext[0]['compressed_size'] / 1024, 2);
                 if ($sizc > 1024)
                 {
-                    $sizc = round($sizc / 1024, 2) . ' мб';
+                    $sizc = round($sizc / 1024, 2) . ' mb';
                 } else
                 {
-                    $sizc = $sizc . ' кб';
+                    $sizc = $sizc . ' mb';
                 }
                 echo '<div class="phdr">'.$lng_dl['file'].': ' . $f . '</div>';
                 echo '<div class="menu">'.$lng_dl['size'].': ' . $siz . '</div>';

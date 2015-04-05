@@ -15,7 +15,7 @@
 $cat = intval($_GET['cat']);
 $ver = intval($_GET['ver']);
 if ($ver) {
-    include_once 'classes/pclzip.lib.php';
+    require_once ROOTPATH . 'incfiles/lib/pclzip.lib.php';
     echo '<div class="phdr">'.$lng_dl['add_file_to_archive'].'</div>';
     $delf1 = mysql_fetch_array(mysql_query("SELECT * FROM `downpath` WHERE `id` = '" . $cat . "';"));
 

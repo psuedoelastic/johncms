@@ -49,7 +49,7 @@ if (mysql_num_rows($file))
     }
 
     $tf = pathinfo($file['way'], PATHINFO_EXTENSION);
-    echo '<div class="phdr"><a href="index.html">'.$lng_dl['downloads'].'</a> ' . $pat .
+    echo '<div class="phdr"><a href="/download/">'.$lng_dl['downloads'].'</a> ' . $pat .
         '<strong>' . str_replace('_', ' ', $namee[0]) . '</strong> [' . size_convert($siz) .
         ']</div>';
     $gol = explode('|', $file['gol']);

@@ -16,7 +16,7 @@ $headmod = 'load';
 if ($rights == 4 || $rights >= 6)
 {
 
-    require_once 'classes/pclzip.lib.php';
+    require_once ROOTPATH . 'incfiles/lib/pclzip.lib.php';
     $zip_act = isset($_GET['zip_act']) ? $_GET['zip_act'] : '';
     $file = functions::check($_GET['file']);
     $file_id = intval($_GET['file_id']);

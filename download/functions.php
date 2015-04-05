@@ -14,6 +14,8 @@ $script_version = '6.2';
 
 $lng_dl = core::load_lng('downloads');
 
+define('PCLZIP_TEMPORARY_DIR', realpath(dirname(__FILE__).'/upl/').'/');
+
 ////// Основные папки /////
 $downpat = 'download/files';
 $filesroot = '../download'; /////////// Главная папка со скриптом
@@ -289,7 +291,7 @@ function f_preview($arr = array(), $set_view = array(), $tf = '')
     {
         $nadir = $arr['pathid'];
         $pat = '';
-        while ($nadir != "")
+        while ($nadir != "" AND $nadir != 0)
         {
             $way_to = mysql_fetch_array(mysql_query("select * from `downpath` where id = '" . $nadir . "';"));
             $pat = '<a href="dir_' . $way_to['id'] . '.html">' . $way_to['name'] . '</a> &gt;  ' . $pat . '';
@@ -429,7 +431,7 @@ function autoscreen_thm($theme, $g_preview_image_w, $g_preview_image_h, $name)
 function autoscreen_nth($theme, $g_preview_image_w, $g_preview_image_h, $name)
 {
     global $home;
-    require_once 'classes/pclzip.lib.php';
+    require_once ROOTPATH . 'incfiles/lib/pclzip.lib.php';
     $nth = new PclZip($theme);
     $content = $nth->extract(PCLZIP_OPT_BY_NAME, 'theme_descriptor.xml', PCLZIP_OPT_EXTRACT_AS_STRING);
     if (!$content)
@@ -622,7 +624,7 @@ function dcount_simba()
     {
         $countf = mysql_result(mysql_query("SELECT COUNT(*) FROM `downfiles` WHERE `type` != 1 AND `status` = 0"), 0);
         if ($countf > 0)
-            $out = $out . '/ <a href="/download/admin.php?act=mod"><font color="#ff0000">'.$lng_dl['moderation'].': ' . $countf . '</font></a>';
+            $out = $out . '/ <a href="/download/admin.php?act=mod"><font color="#ff0000">'.$lng_dl['moderation'].':' . $countf . '</font></a>';
     }
 
     return $out;
