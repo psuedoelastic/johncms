@@ -406,7 +406,6 @@ switch ($act) {
                 // Создаем Администратора
                 mysql_query("INSERT INTO `users` SET
                     `name` = '" . mysql_real_escape_string($admin_user) . "',
-                    `name_lat` = '" . mysql_real_escape_string(mb_strtolower($admin_user)) . "',
                     `password` = '" . md5(md5($admin_pass)) . "',
                     `sex` = 'm',
                     `datereg` = '" . time() . "',

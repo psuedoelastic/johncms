@@ -1,13 +1,13 @@
 <?php
 
 /**
-* @package     JohnCMS
-* @link        http://johncms.com
-* @copyright   Copyright (C) 2008-2011 JohnCMS Community
-* @license     LICENSE.txt (see attached file)
-* @version     VERSION.txt (see attached file)
-* @author      http://johncms.com/about
-*/
+ * @package     JohnCMS
+ * @link        http://johncms.com
+ * @copyright   Copyright (C) 2008-2011 JohnCMS Community
+ * @license     LICENSE.txt (see attached file)
+ * @version     VERSION.txt (see attached file)
+ * @author      http://johncms.com/about
+ */
 
 defined('_IN_JOHNCMS') or die('Error: restricted access');
 
@@ -55,12 +55,14 @@ if (isset($_GET['delavatar'])) {
     @unlink('../files/users/photo/' . $user['id'] . '_small.jpg');
     echo '<div class="rmenu">' . $lng_profile['photo_deleted'] . '</div>';
 } elseif (isset($_POST['submit'])) {
-    /*
-    -----------------------------------------------------------------
-    Принимаем данные из формы, проверяем и записываем в базу
-    -----------------------------------------------------------------
-    */
-    $error = array ();
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Принимаем данные из формы, проверяем и записываем в базу                   //
+    ////////////////////////////////////////////////////////////////////////////////
+
+    $error = array();
+
+    // Общие данные
     $user['imname'] = isset($_POST['imname']) ? functions::check(mb_substr($_POST['imname'], 0, 25)) : '';
     $user['live'] = isset($_POST['live']) ? functions::check(mb_substr($_POST['live'], 0, 50)) : '';
     $user['dayb'] = isset($_POST['dayb']) ? intval($_POST['dayb']) : 0;
@@ -74,60 +76,119 @@ if (isset($_GET['delavatar'])) {
     $user['skype'] = isset($_POST['skype']) ? functions::check(mb_substr($_POST['skype'], 0, 40)) : '';
     $user['jabber'] = isset($_POST['jabber']) ? functions::check(mb_substr($_POST['jabber'], 0, 40)) : '';
     $user['www'] = isset($_POST['www']) ? functions::check(mb_substr($_POST['www'], 0, 40)) : '';
-    // Данные юзера (для Администраторов)
-    $user['name'] = isset($_POST['name']) ? functions::check(mb_substr($_POST['name'], 0, 20)) : $user['name'];
+
+    // Административные данные
+    $nickname = isset($_POST['name']) ? functions::check($_POST['name']) : $user['name'];
+    //$user['name'] = isset($_POST['name']) ? functions::check(mb_substr($_POST['name'], 0, 20)) : $user['name'];
     $user['status'] = isset($_POST['status']) ? functions::check(mb_substr($_POST['status'], 0, 50)) : '';
     $user['karma_off'] = isset($_POST['karma_off']) ? 1 : 0;
     $user['sex'] = isset($_POST['sex']) && $_POST['sex'] == 'm' ? 'm' : 'zh';
     $user['rights'] = isset($_POST['rights']) ? abs(intval($_POST['rights'])) : $user['rights'];
-    // Проводим необходимые проверки
-    if($user['rights'] > $rights || $user['rights'] > 9 || $user['rights'] < 0)
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Проводим необходимые проверки принятых данных                              //
+    ////////////////////////////////////////////////////////////////////////////////
+
+    // Проверка должности
+    if ($user['rights'] > $rights || $user['rights'] > 9 || $user['rights'] < 0) {
         $user['rights'] = 0;
-    if ($rights >= 7) {
-        if (mb_strlen($user['name']) < 2 || mb_strlen($user['name']) > 20)
-            $error[] = $lng_profile['error_nick_lenght'];
-        $lat_nick = functions::rus_lat(mb_strtolower($user['name']));
-        if (preg_match("/[^0-9a-z\-\@\*\(\)\?\!\~\_\=\[\]]+/", $lat_nick))
-            $error[] = $lng_profile['error_nick_symbols'];
     }
+
+    // Проверка даты рождения
     if ($user['dayb'] || $user['monthb'] || $user['yearofbirth']) {
-        if ($user['dayb'] < 1 || $user['dayb'] > 31 || $user['monthb'] < 1 || $user['monthb'] > 12)
+        if ($user['dayb'] < 1 || $user['dayb'] > 31 || $user['monthb'] < 1 || $user['monthb'] > 12) {
             $error[] = $lng_profile['error_birth'];
-    }
-    if ($user['icq'] && ($user['icq'] < 10000 || $user['icq'] > 999999999))
-        $error[] = $lng_profile['error_icq'];
-    if (!$error) {
-        mysql_query("UPDATE `users` SET
-            `imname` = '" . $user['imname'] . "',
-            `live` = '" . $user['live'] . "',
-            `dayb` = '" . $user['dayb'] . "',
-            `monthb` = '" . $user['monthb'] . "',
-            `yearofbirth` = '" . $user['yearofbirth'] . "',
-            `about` = '" . $user['about'] . "',
-            `mibile` = '" . $user['mibile'] . "',
-            `mail` = '" . $user['mail'] . "',
-            `mailvis` = '" . $user['mailvis'] . "',
-            `icq` = '" . $user['icq'] . "',
-            `skype` = '" . $user['skype'] . "',
-            `jabber` = '" . $user['jabber'] . "',
-            `www` = '" . $user['www'] . "'
-            WHERE `id` = '" . $user['id'] . "'
-        ");
-        if ($rights >= 7) {
-            mysql_query("UPDATE `users` SET
-                `name` = '" . $user['name'] . "',
-                `status` = '" . $user['status'] . "',
-                `karma_off` = '" . $user['karma_off'] . "',
-                `sex` = '" . $user['sex'] . "',
-                `rights` = '" . $user['rights'] . "'
-                WHERE `id` = '" . $user['id'] . "'
-            ");
         }
-        echo '<div class="gmenu">' . $lng_profile['data_saved'] . '</div>';
-    } else {
-        echo functions::display_error($error);
     }
-    header('Location: profile.php?act=edit&user=' . $user['id']);
+
+    // Проверка номера ICQ
+    if ($user['icq'] && ($user['icq'] < 10000 || $user['icq'] > 999999999)) {
+        $error[] = $lng_profile['error_icq'];
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // Проверка и смена Ника                                                      //
+    ////////////////////////////////////////////////////////////////////////////////
+    $allowChange = true;
+
+    if ($allowChange) {
+        // Проверка на длину
+        if (mb_strlen($nickname) < 2 || mb_strlen($nickname) > 30) {
+            $error[] = $lng_profile['error_nick_lenght'];
+        }
+
+        // Проверка на запрещенные символы
+        if (preg_match('/[^\da-zа-я\-\.\ \@\*\(\)\?\!\~\_\=\[\]]+/iu', $nickname)) {
+            $error[] = $lng_profile['error_nick_symbols'];
+        }
+
+        // Проверка на символы из разных кодировок
+        if (preg_match('~(([a-z]+)([а-я]+)|([а-я]+)([a-z]+))~iu', $nickname)) {
+            $error[] = $lng_profile['error_nick_charsets'];
+        }
+
+        // Проверка на повторяющиеся символы
+        if (preg_match('/(.)\1\1\1/iu', $nickname)) {
+            $error[] = $lng_profile['error_nick_rptchars'];
+        }
+
+        // Проверка на ник только из цифр
+        if (ctype_digit($nickname)) {
+            $error[] = $lng_profile['error_nick_digits'];
+        }
+
+        // Проверка на Email в качестве Ника
+        if (filter_var($nickname, FILTER_VALIDATE_EMAIL)) {
+            $error[] = $lng_profile['error_nick_email'];
+        }
+
+        if (!$error) {
+            $user['name'] = $nickname;
+        }
+    }
+
+    if (!$error) {
+//        mysql_query("UPDATE `users` SET
+//            `imname` = '" . $user['imname'] . "',
+//            `live` = '" . $user['live'] . "',
+//            `dayb` = '" . $user['dayb'] . "',
+//            `monthb` = '" . $user['monthb'] . "',
+//            `yearofbirth` = '" . $user['yearofbirth'] . "',
+//            `about` = '" . $user['about'] . "',
+//            `mibile` = '" . $user['mibile'] . "',
+//            `mail` = '" . $user['mail'] . "',
+//            `mailvis` = '" . $user['mailvis'] . "',
+//            `icq` = '" . $user['icq'] . "',
+//            `skype` = '" . $user['skype'] . "',
+//            `jabber` = '" . $user['jabber'] . "',
+//            `www` = '" . $user['www'] . "'
+//            WHERE `id` = '" . $user['id'] . "'
+//        ");
+//        if ($rights >= 7) {
+//            mysql_query("UPDATE `users` SET
+//                `name` = '" . $user['name'] . "',
+//                `status` = '" . $user['status'] . "',
+//                `karma_off` = '" . $user['karma_off'] . "',
+//                `sex` = '" . $user['sex'] . "',
+//                `rights` = '" . $user['rights'] . "'
+//                WHERE `id` = '" . $user['id'] . "'
+//            ");
+//        }
+
+        //TODO: Удалить
+        echo '<pre>';
+        print_r($user);
+        echo '</pre>';
+
+        echo '<div class="gmenu"><h3>' . $lng_profile['data_saved'] . '</h3>'
+            . '<p>' . '<a href="profile.php?act=edit&user=' . $user['id'] . '">' . $lng['continue'] . '</a>' . '</p>'
+            . '</div>';
+    } else {
+        echo functions::display_error($error,
+            '<a href="profile.php?act=edit&user=' . $user['id'] . '">' . $lng['continue'] . '</a>');
+    }
+
+    require('../incfiles/end.php');
     exit;
 }
 
@@ -137,8 +198,7 @@ if (isset($_GET['delavatar'])) {
 -----------------------------------------------------------------
 */
 echo '<form action="profile.php?act=edit&amp;user=' . $user['id'] . '" method="post">' .
-    '<div class="gmenu"><p>' .
-    $lng['login_name'] . ': <b>' . $user['name_lat'] . '</b><br />';
+    '<div class="gmenu"><p>';
 if ($rights >= 7) {
     echo $lng['nick'] . ': (' . $lng_profile['nick_lenght'] . ')<br /><input type="text" value="' . $user['name'] . '" name="name" /><br />' .
         $lng['status'] . ': (' . $lng_profile['status_lenght'] . ')<br /><input type="text" value="' . $user['status'] . '" name="status" /><br />';
@@ -153,8 +213,9 @@ if (file_exists(('../files/users/avatar/' . $user['id'] . '.png'))) {
     $link = ' | <a href="profile.php?act=edit&amp;user=' . $user['id'] . '&amp;delavatar">' . $lng['delete'] . '</a>';
 }
 echo '<small><a href="profile.php?act=images&amp;mod=avatar&amp;user=' . $user['id'] . '">' . $lng_profile['upload'] . '</a>';
-if($user['id'] == $user_id)
+if ($user['id'] == $user_id) {
     echo ' | <a href="../pages/faq.php?act=avatars">' . $lng['select'] . '</a>';
+}
 echo $link . '</small></p>';
 echo '<p>' . $lng_profile['photo'] . ':<br />';
 $link = '';
@@ -190,8 +251,9 @@ if ($rights >= 7) {
         echo '<li><input name="karma_off" type="checkbox" value="1" ' . ($user['karma_off'] ? 'checked="checked"' : '') . ' />&#160;<span class="red"><b>' . $lng_profile['deny_karma'] . '</b></span></li>';
     }
     echo '<li><a href="profile.php?act=password&amp;user=' . $user['id'] . '">' . $lng['change_password'] . '</a></li>';
-    if($rights > $user['rights'])
+    if ($rights > $user['rights']) {
         echo '<li><a href="profile.php?act=reset&amp;user=' . $user['id'] . '">' . $lng['reset_settings'] . '</a></li>';
+    }
     echo '<li>' . $lng_profile['specify_sex'] . ':<br />' .
         '<input type="radio" value="m" name="sex" ' . ($user['sex'] == 'm' ? 'checked="checked"' : '') . '/>&#160;' . $lng_profile['sex_m'] . '<br />' .
         '<input type="radio" value="zh" name="sex" ' . ($user['sex'] == 'zh' ? 'checked="checked"' : '') . '/>&#160;' . $lng_profile['sex_w'] . '</li>' .
@@ -214,4 +276,3 @@ if ($rights >= 7) {
 echo '<div class="gmenu"><input type="submit" value="' . $lng['save'] . '" name="submit" /></div>' .
     '</form>' .
     '<div class="phdr"><a href="profile.php?user=' . $user['id'] . '">' . $lng['to_form'] . '</a></div>';
-?>

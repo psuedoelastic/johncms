@@ -10,7 +10,7 @@
  */
 
 define('_IN_JOHNCMS', 1);
-
+//TODO: доработать
 require('incfiles/core.php');
 $textl = $lng['registration'];
 $headmod = 'registration';
@@ -80,7 +80,7 @@ if (isset($_POST['submit'])) {
         $reg_name = functions::check(mb_substr($reg_name, 0, 20));
         $reg_about = functions::check(mb_substr($reg_about, 0, 500));
         // Проверка, занят ли ник
-        $req = mysql_query("SELECT * FROM `users` WHERE `name_lat`='" . mysql_real_escape_string($lat_nick) . "'");
+        $req = mysql_query("SELECT * FROM `users` WHERE `name`='" . mysql_real_escape_string($lat_nick) . "'");
         if (mysql_num_rows($req) != 0) {
             $error['login'][] = $lng_reg['error_nick_occupied'];
         }

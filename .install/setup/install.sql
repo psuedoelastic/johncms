@@ -368,7 +368,8 @@ INSERT INTO `cms_settings` (`key`, `val`) VALUES
   ('mod_gal_comm', '1'),
   ('meta_desc', 'Powered by JohnCMS http://johncms.com'),
   ('meta_key', 'johncms'),
-  ('news', 'a:8:{s:4:"view";i:1;s:4:"size";i:200;s:8:"quantity";i:5;s:4:"days";i:3;s:6:"breaks";i:1;s:7:"smileys";i:1;s:4:"tags";i:1;s:3:"kom";i:1;}'),
+  ('news',
+   'a:8:{s:4:"view";i:1;s:4:"size";i:200;s:8:"quantity";i:5;s:4:"days";i:3;s:6:"breaks";i:1;s:7:"smileys";i:1;s:4:"tags";i:1;s:3:"kom";i:1;}'),
   ('reg_message', ''),
   ('setting_mail', ''),
   ('skindef', 'default'),
@@ -580,18 +581,18 @@ CREATE TABLE `library_cats` (
 --
 DROP TABLE IF EXISTS `library_texts`;
 CREATE TABLE `library_texts` (
-  `id`             INT(10) UNSIGNED  NOT NULL AUTO_INCREMENT,
-  `cat_id`         INT(10)  UNSIGNED NOT NULL DEFAULT '0',
-  `text`           MEDIUMTEXT        NOT NULL,
-  `name`           VARCHAR(255)      NOT NULL DEFAULT '',
+  `id`             INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cat_id`         INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `text`           MEDIUMTEXT       NOT NULL,
+  `name`           VARCHAR(255)     NOT NULL DEFAULT '',
   `announce`       TEXT,
-  `uploader`       VARCHAR(100)      NOT NULL DEFAULT '',
-  `uploader_id`    INT(10)  UNSIGNED NOT NULL DEFAULT '0',
-  `count_views`    INT(10) UNSIGNED  NOT NULL DEFAULT '0',
-  `premod`         TINYINT(1)        NOT NULL DEFAULT '0',
-  `comments`       TINYINT(1)        NOT NULL DEFAULT '0',
-  `count_comments` INT(10)  UNSIGNED NOT NULL DEFAULT '0',
-  `time`           INT(10) UNSIGNED  NOT NULL DEFAULT '0',
+  `uploader`       VARCHAR(100)     NOT NULL DEFAULT '',
+  `uploader_id`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `count_views`    INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `premod`         TINYINT(1)       NOT NULL DEFAULT '0',
+  `comments`       TINYINT(1)       NOT NULL DEFAULT '0',
+  `count_comments` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  `time`           INT(10) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   FULLTEXT KEY `text` (`text`, `name`)
 )
@@ -635,15 +636,18 @@ CREATE TABLE `cms_library_comments` (
 --
 -- Структура таблицы `cms_library_rating`
 --
-DROP TABLE IF EXISTS `cms_library_rating`;  
+DROP TABLE IF EXISTS `cms_library_rating`;
 CREATE TABLE IF NOT EXISTS `cms_library_rating` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `st_id` int(11) NOT NULL,
-  `point` tinyint(1) NOT NULL,
+  `id`      INT(11)    NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11)    NOT NULL,
+  `st_id`   INT(11)    NOT NULL,
+  `point`   TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`,`st_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;  
+  KEY `user_id` (`user_id`, `st_id`)
+)
+  ENGINE = MyISAM
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
 
 --
 -- Структура таблицы `news`
@@ -667,8 +671,7 @@ CREATE TABLE `news` (
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id`            INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
-  `name`          VARCHAR(25)         NOT NULL DEFAULT '',
-  `name_lat`      VARCHAR(40)         NOT NULL DEFAULT '',
+  `name`          VARCHAR(100)        NOT NULL DEFAULT '',
   `password`      VARCHAR(32)         NOT NULL DEFAULT '',
   `rights`        TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
   `failed_login`  TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
@@ -715,7 +718,7 @@ CREATE TABLE `users` (
   `comm_old`      INT(10) UNSIGNED    NOT NULL DEFAULT '0',
   `smileys`       TEXT                NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `name_lat` (`name_lat`),
+  UNIQUE KEY `name` (`name`),
   KEY `lastdate` (`lastdate`),
   KEY `place` (`place`)
 )
